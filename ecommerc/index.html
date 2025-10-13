@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopHub - Your Online Shopping Destination</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+    <link href="./dist/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Top Header Bar -->
+    <div class="bg-gray-900 text-white text-sm">
+        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <span class="hover:text-orange-400 cursor-pointer transition-colors">
+                    <i class="fas fa-map-marker-alt mr-1"></i>Deliver to New York 10001
+                </span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="hover:text-orange-400 cursor-pointer transition-colors">Customer Service</span>
+                <span class="hover:text-orange-400 cursor-pointer transition-colors">Track Order</span>
+                <span class="hover:text-orange-400 cursor-pointer transition-colors">
+                    <i class="fas fa-user mr-1"></i>Account
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="bg-gray-800 text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-3xl font-bold text-orange-400 cursor-pointer hover:text-orange-300 transition-colors">
+                        <i class="fas fa-shopping-bag mr-2"></i>ShopHub
+                    </h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="flex">
+                        <select class="bg-gray-200 text-gray-800 px-3 py-2 rounded-l-md border-r border-gray-300 focus:outline-none">
+                            <option>All</option>
+                            <option>Electronics</option>
+                            <option>Fashion</option>
+                            <option>Home & Kitchen</option>
+                            <option>Books</option>
+                            <option>Sports</option>
+                        </select>
+                        <input type="text" placeholder="Search for products..." 
+                               class="flex-1 px-4 py-2 text-gray-800 focus:outline-none" id="searchInput">
+                        <button class="bg-orange-500 hover:bg-orange-600 px-6 py-2 rounded-r-md transition-colors">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Menu -->
+                <div class="flex items-center space-x-6">
+                    <div class="hover:text-orange-400 cursor-pointer transition-colors">
+                        <i class="fas fa-heart text-xl"></i>
+                        <span class="ml-1 text-sm">Wishlist</span>
+                    </div>
+                    <div class="relative hover:text-orange-400 cursor-pointer transition-colors" id="cartIcon">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="absolute -top-2 -right-2 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" id="cartCount">0</span>
+                        <span class="ml-1 text-sm">Cart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Bar -->
+        <nav class="bg-gray-700">
+            <div class="container mx-auto px-4">
+                <ul class="flex space-x-6 py-2 text-sm">
+                    <li class="hover:text-orange-400 cursor-pointer transition-colors font-semibold">
+                        <i class="fas fa-bars mr-1"></i>All Departments
+                    </li>
+                    <li class="hover:text-orange-400 cursor-pointer transition-colors">Today's Deals</li>
+                    <li class="hover:text-orange-400 cursor-pointer transition-colors">Electronics</li>
+                    <li class="hover:text-orange-400 cursor-pointer transition-colors">Fashion</li>
+                    <li class="hover:text-orange-400 cursor-pointer transition-colors">Home & Kitchen</li>
+                    <li class="hover:text-orange-400 cursor-pointer transition-colors">Books</li>
+                    <li class="hover:text-orange-400 cursor-pointer transition-colors">Sports & Outdoors</li>
+                    <li class="hover:text-orange-400 cursor-pointer transition-colors text-orange-400">
+                        <i class="fas fa-tag mr-1"></i>Special Offers
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Carousel Section -->
+    <section class="relative bg-gradient-to-r from-orange-400 to-pink-500 text-white">
+        <div class="container mx-auto px-4 py-20">
+            <div class="max-w-2xl">
+                <h2 class="text-5xl font-bold mb-4">Mega Sale Season</h2>
+                <p class="text-xl mb-6">Up to 70% off on selected items. Limited time offer!</p>
+                <button class="bg-white text-orange-600 font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg">
+                    Shop Now <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            <span class="w-3 h-3 bg-white rounded-full cursor-pointer"></span>
+            <span class="w-3 h-3 bg-white bg-opacity-50 rounded-full cursor-pointer"></span>
+            <span class="w-3 h-3 bg-white bg-opacity-50 rounded-full cursor-pointer"></span>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="container mx-auto px-4 py-8">
+        <h3 class="text-2xl font-bold mb-6 text-gray-800">Shop by Category</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1">
+                <div class="text-4xl text-center mb-3 text-blue-600">
+                    <i class="fas fa-laptop"></i>
+                </div>
+                <h4 class="text-center font-semibold text-gray-800">Electronics</h4>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1">
+                <div class="text-4xl text-center mb-3 text-pink-600">
+                    <i class="fas fa-tshirt"></i>
+                </div>
+                <h4 class="text-center font-semibold text-gray-800">Fashion</h4>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1">
+                <div class="text-4xl text-center mb-3 text-green-600">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h4 class="text-center font-semibold text-gray-800">Home & Kitchen</h4>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1">
+                <div class="text-4xl text-center mb-3 text-orange-600">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h4 class="text-center font-semibold text-gray-800">Books</h4>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1">
+                <div class="text-4xl text-center mb-3 text-red-600">
+                    <i class="fas fa-football-ball"></i>
+                </div>
+                <h4 class="text-center font-semibold text-gray-800">Sports</h4>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition-all cursor-pointer transform hover:-translate-y-1">
+                <div class="text-4xl text-center mb-3 text-purple-600">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <h4 class="text-center font-semibold text-gray-800">Gaming</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-800">Featured Products</h3>
+            <a href="#" class="text-orange-500 hover:text-orange-600 font-semibold">View All <i class="fas fa-arrow-right ml-1"></i></a>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6" id="productsGrid">
+            <!-- Products will be dynamically inserted here -->
+        </div>
+    </section>
+
+    <!-- Today's Deals Section -->
+    <section class="bg-white py-8 mt-8">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Today's Best Deals</h3>
+                <a href="#" class="text-orange-500 hover:text-orange-600 font-semibold">See All Deals <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="dealsGrid">
+                <!-- Deals will be dynamically inserted here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Banner Section -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-lg p-8 text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="text-3xl font-bold mb-3">New Arrivals</h3>
+                    <p class="mb-4">Check out the latest products in electronics</p>
+                    <button class="bg-white text-blue-700 font-semibold px-6 py-2 rounded-full hover:bg-gray-100 transition-all">
+                        Explore Now
+                    </button>
+                </div>
+                <div class="absolute right-0 bottom-0 text-9xl opacity-20">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+            </div>
+            <div class="bg-gradient-to-r from-purple-500 to-purple-700 rounded-lg p-8 text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="text-3xl font-bold mb-3">Fashion Week</h3>
+                    <p class="mb-4">Trending styles at unbeatable prices</p>
+                    <button class="bg-white text-purple-700 font-semibold px-6 py-2 rounded-full hover:bg-gray-100 transition-all">
+                        Shop Fashion
+                    </button>
+                </div>
+                <div class="absolute right-0 bottom-0 text-9xl opacity-20">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-4 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-xl font-bold mb-4 text-orange-400">Get to Know Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Press Releases</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">ShopHub Science</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4 text-orange-400">Make Money with Us</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Sell on ShopHub</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Become an Affiliate</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Advertise Your Products</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Self-Publish with Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4 text-orange-400">ShopHub Payment</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">ShopHub Rewards</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Shop with Points</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Reload Your Balance</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Currency Converter</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold mb-4 text-orange-400">Let Us Help You</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Your Account</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Your Orders</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Shipping & Returns</a></li>
+                        <li><a href="#" class="hover:text-orange-400 transition-colors">Help</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <div class="flex justify-center space-x-6 mb-4">
+                    <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-2xl hover:text-orange-400 transition-colors"><i class="fab fa-youtube"></i></a>
+                </div>
+                <p class="text-gray-400">&copy; 2025 ShopHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar (Hidden by default) -->
+    <div id="cartSidebar" class="fixed right-0 top-0 h-full w-96 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-50">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-800">Shopping Cart</h3>
+                <button id="closeCart" class="text-gray-600 hover:text-gray-800 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="cartItems" class="space-y-4 mb-6 max-h-96 overflow-y-auto">
+                <!-- Cart items will be inserted here -->
+            </div>
+            <div class="border-t pt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-lg font-semibold">Subtotal:</span>
+                    <span class="text-2xl font-bold text-orange-600" id="cartTotal">$0.00</span>
+                </div>
+                <button class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 rounded-lg transition-colors">
+                    Proceed to Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay for cart sidebar -->
+    <div id="cartOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
