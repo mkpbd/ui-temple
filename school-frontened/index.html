@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bright Future Academy - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .hero-bg {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800">
+    <!-- Header -->
+    <header class="bg-blue-900 text-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-graduation-cap text-3xl mr-3"></i>
+                    <h1 class="text-2xl font-bold">Bright Future Academy</h1>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-blue-300 transition">Home</a>
+                    <a href="about.html" class="hover:text-blue-300 transition">About</a>
+                    <a href="gallery.html" class="hover:text-blue-300 transition">Gallery</a>
+                    <a href="login.html" id="login-link" class="hover:text-blue-300 transition">Login</a>
+                    <a href="#" id="logout-link" class="hidden hover:text-blue-300 transition" onclick="logout()">Logout</a>
+                    <span id="user-greeting" class="hidden"></span>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <nav id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 hover:text-blue-300 transition">Home</a>
+                <a href="about.html" class="block py-2 hover:text-blue-300 transition">About</a>
+                <a href="gallery.html" class="block py-2 hover:text-blue-300 transition">Gallery</a>
+                <a href="login.html" id="mobile-login-link" class="block py-2 hover:text-blue-300 transition">Login</a>
+                <a href="#" id="mobile-logout-link" class="hidden block py-2 hover:text-blue-300 transition" onclick="logout()">Logout</a>
+                <span id="mobile-user-greeting" class="hidden block py-2"></span>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg h-96 flex items-center justify-center text-white">
+        <div class="text-center fade-in">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Welcome to Bright Future Academy</h2>
+            <p class="text-xl mb-8">Nurturing Minds, Shaping Futures</p>
+            <a href="#events" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full transition transform hover:scale-105">
+                Learn More
+            </a>
+        </div>
+    </section>
+
+    <!-- Quick Links Section -->
+    <section class="py-12 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Quick Links</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Academic Calendar</h3>
+                    <p class="text-gray-600 mb-4">View important dates, holidays, and examination schedules.</p>
+                    <a href="#" class="text-blue-600 font-medium hover:text-blue-800">View Calendar →</a>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Online Resources</h3>
+                    <p class="text-gray-600 mb-4">Access study materials, e-books, and educational resources.</p>
+                    <a href="#" class="text-blue-600 font-medium hover:text-blue-800">Access Resources →</a>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition transform hover:-translate-y-1">
+                    <div class="text-blue-600 text-4xl mb-4">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Parent Portal</h3>
+                    <p class="text-gray-600 mb-4">Track your child's progress, attendance, and communicate with teachers.</p>
+                    <a href="#" class="text-blue-600 font-medium hover:text-blue-800">Login to Portal →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Events Section -->
+    <section id="events" class="py-12">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Upcoming Events</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+                    <div class="bg-blue-600 text-white p-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold">Annual Science Exhibition</h3>
+                                <p class="text-blue-100">July 15, 2023</p>
+                            </div>
+                            <div class="text-3xl">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-gray-600">Students showcase their innovative science projects and experiments.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+                    <div class="bg-green-600 text-white p-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold">Sports Day</h3>
+                                <p class="text-green-100">July 22, 2023</p>
+                            </div>
+                            <div class="text-3xl">
+                                <i class="fas fa-running"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-gray-600">Annual sports competition with various athletic events.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition">
+                    <div class="bg-purple-600 text-white p-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold">Parent-Teacher Meeting</h3>
+                                <p class="text-purple-100">July 29, 2023</p>
+                            </div>
+                            <div class="text-3xl">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-gray-600">Discuss your child's progress with their teachers.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Notices Section -->
+    <section class="py-12 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-8">Latest Notices</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-lg shadow-md p-6 mb-4 hover:shadow-lg transition">
+                    <div class="flex items-start">
+                        <div class="bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-exclamation"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-1">Summer Vacation Schedule</h3>
+                            <p class="text-gray-600 text-sm mb-2">Posted on June 15, 2023</p>
+                            <p class="text-gray-700">School will remain closed from July 1 to July 15 for summer vacation. Classes will resume on July 16.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 mb-4 hover:shadow-lg transition">
+                    <div class="flex items-start">
+                        <div class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-info"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-1">New Admission Open</h3>
+                            <p class="text-gray-600 text-sm mb-2">Posted on June 10, 2023</p>
+                            <p class="text-gray-700">Admissions for the academic year 2023-24 are now open. Please visit the school office for application forms.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                    <div class="flex items-start">
+                        <div class="bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-1">Result Declaration</h3>
+                            <p class="text-gray-600 text-sm mb-2">Posted on June 5, 2023</p>
+                            <p class="text-gray-700">Final examination results for Grade 10 and 12 will be declared on June 25, 2023.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Bright Future Academy</h3>
+                    <p class="text-blue-200">Providing quality education since 1985. Nurturing young minds for a brighter tomorrow.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-blue-200 hover:text-white transition">Home</a></li>
+                        <li><a href="about.html" class="text-blue-200 hover:text-white transition">About</a></li>
+                        <li><a href="gallery.html" class="text-blue-200 hover:text-white transition">Gallery</a></li>
+                        <li><a href="login.html" class="text-blue-200 hover:text-white transition">Login</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Contact Us</h3>
+                    <p class="text-blue-200 mb-2"><i class="fas fa-map-marker-alt mr-2"></i>123 Education Street, Knowledge City</p>
+                    <p class="text-blue-200 mb-2"><i class="fas fa-phone mr-2"></i>+1 (123) 456-7890</p>
+                    <p class="text-blue-200 mb-4"><i class="fas fa-envelope mr-2"></i>info@brightfuture.edu</p>
+                    
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white transition"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white transition"><i class="fab fa-twitter text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white transition"><i class="fab fa-linkedin text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-blue-800 mt-8 pt-6 text-center text-blue-200">
+                <p>&copy; 2023 Bright Future Academy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

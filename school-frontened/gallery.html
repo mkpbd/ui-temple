@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Bright Future Academy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .gallery-item {
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .masonry-grid {
+            column-count: 4;
+            column-gap: 1rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .masonry-grid {
+                column-count: 1;
+            }
+        }
+        
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800">
+    <!-- Header -->
+    <header class="bg-blue-900 text-white shadow-md sticky top-0 z-40">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-graduation-cap text-3xl mr-3"></i>
+                    <h1 class="text-2xl font-bold">Bright Future Academy</h1>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex space-x-6">
+                    <a href="index.html" class="hover:text-blue-300 transition">Home</a>
+                    <a href="about.html" class="hover:text-blue-300 transition">About</a>
+                    <a href="gallery.html" class="hover:text-blue-300 transition">Gallery</a>
+                    <a href="login.html" id="login-link" class="hover:text-blue-300 transition">Login</a>
+                    <a href="#" id="logout-link" class="hidden hover:text-blue-300 transition" onclick="logout()">Logout</a>
+                    <span id="user-greeting" class="hidden"></span>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <nav id="mobile-menu" class="hidden md:hidden pb-4">
+                <a href="index.html" class="block py-2 hover:text-blue-300 transition">Home</a>
+                <a href="about.html" class="block py-2 hover:text-blue-300 transition">About</a>
+                <a href="gallery.html" class="block py-2 hover:text-blue-300 transition">Gallery</a>
+                <a href="login.html" id="mobile-login-link" class="block py-2 hover:text-blue-300 transition">Login</a>
+                <a href="#" id="mobile-logout-link" class="hidden block py-2 hover:text-blue-300 transition" onclick="logout()">Logout</a>
+                <span id="mobile-user-greeting" class="hidden block py-2"></span>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-blue-800 text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-4 fade-in">Gallery</h2>
+            <p class="text-xl max-w-3xl mx-auto fade-in">Explore our campus life, events, and achievements through these memorable moments.</p>
+        </div>
+    </section>
+
+    <!-- Gallery Filter Section -->
+    <section class="py-8 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-wrap justify-center gap-2">
+                <button class="filter-btn px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition" data-filter="all">All</button>
+                <button class="filter-btn px-4 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 transition" data-filter="campus">Campus</button>
+                <button class="filter-btn px-4 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 transition" data-filter="events">Events</button>
+                <button class="filter-btn px-4 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 transition" data-filter="sports">Sports</button>
+                <button class="filter-btn px-4 py-2 bg-gray-300 text-gray-700 rounded-full hover:bg-gray-400 transition" data-filter="academics">Academics</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="masonry-grid">
+                <!-- Campus Images -->
+                <div class="masonry-item gallery-item" data-category="campus">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/campus1/400/600.jpg" alt="School Building" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/campus1/800/1200.jpg', 'Main School Building')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Main School Building</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="campus">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/campus2/400/400.jpg" alt="Library" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/campus2/800/800.jpg', 'School Library')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">School Library</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="campus">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/campus3/400/500.jpg" alt="Science Lab" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/campus3/800/1000.jpg', 'Science Laboratory')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Science Laboratory</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="campus">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/campus4/400/450.jpg" alt="Playground" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/campus4/800/900.jpg', 'School Playground')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">School Playground</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Events Images -->
+                <div class="masonry-item gallery-item" data-category="events">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/event1/400/550.jpg" alt="Annual Day" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/event1/800/1100.jpg', 'Annual Day Celebration')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Annual Day Celebration</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="events">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/event2/400/400.jpg" alt="Cultural Fest" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/event2/800/800.jpg', 'Cultural Fest')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Cultural Fest</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="events">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/event3/400/480.jpg" alt="Science Exhibition" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/event3/800/960.jpg', 'Science Exhibition')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Science Exhibition</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="events">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/event4/400/420.jpg" alt="Graduation Ceremony" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/event4/800/840.jpg', 'Graduation Ceremony')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Graduation Ceremony</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sports Images -->
+                <div class="masonry-item gallery-item" data-category="sports">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/sports1/400/500.jpg" alt="Basketball Match" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/sports1/800/1000.jpg', 'Basketball Match')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Basketball Match</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="sports">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/sports2/400/400.jpg" alt="Swimming Competition" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/sports2/800/800.jpg', 'Swimming Competition')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Swimming Competition</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="sports">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/sports3/400/460.jpg" alt="Athletics Meet" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/sports3/800/920.jpg', 'Athletics Meet')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Athletics Meet</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Academics Images -->
+                <div class="masonry-item gallery-item" data-category="academics">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/academic1/400/480.jpg" alt="Classroom" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/academic1/800/960.jpg', 'Interactive Classroom')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Interactive Classroom</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="academics">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/academic2/400/520.jpg" alt="Computer Lab" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/academic2/800/1040.jpg', 'Computer Lab')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Computer Lab</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="masonry-item gallery-item" data-category="academics">
+                    <div class="relative overflow-hidden rounded-lg shadow-md">
+                        <img src="https://picsum.photos/seed/academic3/400/440.jpg" alt="Art Class" class="w-full cursor-pointer" onclick="openLightbox('https://picsum.photos/seed/academic3/800/880.jpg', 'Art Class')">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-semibold">Art Class</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Bright Future Academy</h3>
+                    <p class="text-blue-200">Providing quality education since 1985. Nurturing young minds for a brighter tomorrow.</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-blue-200 hover:text-white transition">Home</a></li>
+                        <li><a href="about.html" class="text-blue-200 hover:text-white transition">About</a></li>
+                        <li><a href="gallery.html" class="text-blue-200 hover:text-white transition">Gallery</a></li>
+                        <li><a href="login.html" class="text-blue-200 hover:text-white transition">Login</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">Contact Us</h3>
+                    <p class="text-blue-200 mb-2"><i class="fas fa-map-marker-alt mr-2"></i>123 Education Street, Knowledge City</p>
+                    <p class="text-blue-200 mb-2"><i class="fas fa-phone mr-2"></i>+1 (123) 456-7890</p>
+                    <p class="text-blue-200 mb-4"><i class="fas fa-envelope mr-2"></i>info@brightfuture.edu</p>
+                    
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-blue-200 hover:text-white transition"><i class="fab fa-facebook text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white transition"><i class="fab fa-twitter text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+                        <a href="#" class="text-blue-200 hover:text-white transition"><i class="fab fa-linkedin text-xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-blue-800 mt-8 pt-6 text-center text-blue-200">
+                <p>&copy; 2023 Bright Future Academy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Gallery filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Update active button
+                    filterBtns.forEach(b => {
+                        b.classList.remove('bg-blue-600', 'text-white');
+                        b.classList.add('bg-gray-300', 'text-gray-700');
+                    });
+                    this.classList.remove('bg-gray-300', 'text-gray-700');
+                    this.classList.add('bg-blue-600', 'text-white');
+                    
+                    // Filter gallery items
+                    const filter = this.getAttribute('data-filter');
+                    galleryItems.forEach(item => {
+                        if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
