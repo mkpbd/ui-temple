@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management Dashboard - Content Components</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'gallery-fade': 'galleryFade 0.5s ease-out',
+                        'zoom-in': 'zoomIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        galleryFade: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        zoomIn: {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .dark .scrollbar-thin::-webkit-scrollbar-track {
+            background: #374151;
+        }
+        .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+        
+        /* Gallery Styles */
+        .gallery-item {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .gallery-item:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        .gallery-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+        }
+        
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            animation: zoomIn 0.3s ease-out;
+        }
+        
+        /* Audio Player Styles */
+        .audio-player {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .audio-wave span {
+            width: 3px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 3px;
+            animation: wave 1s ease-in-out infinite;
+        }
+        .audio-wave span:nth-child(2) { animation-delay: 0.1s; }
+        .audio-wave span:nth-child(3) { animation-delay: 0.2s; }
+        .audio-wave span:nth-child(4) { animation-delay: 0.3s; }
+        .audio-wave span:nth-child(5) { animation-delay: 0.4s; }
+        @keyframes wave {
+            0%, 100% { height: 10px; }
+            50% { height: 20px; }
+        }
+        
+        /* Video Player Styles */
+        .video-thumbnail {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            transition: background 0.3s ease;
+        }
+        .video-thumbnail:hover::before {
+            background: rgba(0,0,0,0.1);
+        }
+        
+        /* List Animations */
+        .list-item {
+            transition: all 0.3s ease;
+        }
+        .list-item:hover {
+            transform: translateX(5px);
+        }
+        
+        /* Badge Animations */
+        .badge-glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col fixed lg:relative lg:translate-x-0 -translate-x-full h-full z-30">
+            <!-- Logo -->
+            <div class="p-6 border-b dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-800 dark:text-white">EduManage</h1>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto scrollbar-thin p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" data-page="dashboard" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-home w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="students" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-user-graduate w-5"></i>
+                            <span>Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="teachers" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-chalkboard-teacher w-5"></i>
+                            <span>Teachers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="classes" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-school w-5"></i>
+                            <span>Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="attendance" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-calendar-check w-5"></i>
+                            <span>Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="exams" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-clipboard-list w-5"></i>
+                            <span>Exams</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="fees" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-dollar-sign w-5"></i>
+                            <span>Fees</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="content-components" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-all">
+                            <i class="fas fa-layer-group w-5"></i>
+                            <span>Content</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="settings" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Profile in Sidebar -->
+            <div class="p-4 border-t dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <img src="https://picsum.photos/seed/admin/40/40" alt="Admin" class="w-10 h-10 rounded-full">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Admin User</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">admin@school.edu</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center space-x-4">
+                        <button id="sidebarToggle" class="lg:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <!-- Search Bar -->
+                        <div class="relative hidden md:block">
+                            <input type="text" placeholder="Search content..." 
+                                class="w-64 pl-10 pr-4 py-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <!-- Theme Toggle -->
+                        <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:inline"></i>
+                        </button>
+                        
+                        <!-- Notifications -->
+                        <button class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        
+                        <!-- User Dropdown -->
+                        <div class="relative">
+                            <button id="userDropdown" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <img src="https://picsum.photos/seed/admin/32/32" alt="User" class="w-8 h-8 rounded-full">
+                                <i class="fas fa-chevron-down text-xs text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            
+                            <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 z-50">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-user mr-2"></i> Profile
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-cog mr-2"></i> Settings
+                                </a>
+                                <hr class="my-1 dark:border-gray-700">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto scrollbar-thin bg-gray-50 dark:bg-gray-900">
+                <div class="p-6">
+                    <!-- Content Components Page -->
+                    <div id="content-componentsPage" class="page-content">
+                        <!-- Page Header -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Content Components</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Complete collection of lists, badges, galleries, and media components</p>
+                        </div>
+                        
+                        <!-- Lists Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-list mr-3 text-blue-600 dark:text-blue-400"></i>
+                                Lists
+                            </h3>
+                            
+                            <!-- Ordered Lists -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Ordered Lists</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Default Ordered List</h5>
+                                        <ol class="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                                            <li class="list-item">First item in the list</li>
+                                            <li class="list-item">Second item in the list</li>
+                                            <li class="list-item">Third item in the list</li>
+                                            <li class="list-item">Fourth item in the list</li>
+                                        </ol>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Roman Numerals</h5>
+                                        <ol class="list-[upper-roman] list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                                            <li class="list-item">Introduction to Mathematics</li>
+                                            <li class="list-item">Advanced Calculus</li>
+                                            <li class="list-item">Linear Algebra</li>
+                                            <li class="list-item">Statistics and Probability</li>
+                                        </ol>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Alphabetical List</h5>
+                                        <ol class="list-[upper-alpha] list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                                            <li class="list-item">Complete the assignment</li>
+                                            <li class="list-item">Submit the project</li>
+                                            <li class="list-item">Review the materials</li>
+                                            <li class="list-item">Prepare for the exam</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Unordered Lists -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Unordered Lists</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Bullet Points</h5>
+                                        <ul class="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                                            <li class="list-item">Mathematics course available</li>
+                                            <li class="list-item">Science lab fully equipped</li>
+                                            <li class="list-item">Computer lab with latest tech</li>
+                                            <li class="list-item">Library with extensive collection</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Square Bullets</h5>
+                                        <ul class="list-[square] list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                                            <li class="list-item">Morning session: 8AM - 12PM</li>
+                                            <li class="list-item">Afternoon session: 1PM - 5PM</li>
+                                            <li class="list-item">Evening classes: 6PM - 8PM</li>
+                                            <li class="list-item">Weekend workshops available</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div>
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">No Style</h5>
+                                        <ul class="list-none space-y-2 text-gray-700 dark:text-gray-300">
+                                            <li class="list-item">• Student registration open</li>
+                                            <li class="list-item">• Teacher recruitment ongoing</li>
+                                            <li class="list-item">• New courses added</li>
+                                            <li class="list-item">• Facility upgrades completed</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Description Lists -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Description Lists</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <dl class="space-y-2">
+                                        <div class="flex">
+                                            <dt class="font-medium text-gray-800 dark:text-white w-32">HTML:</dt>
+                                            <dd class="text-gray-600 dark:text-gray-400">HyperText Markup Language</dd>
+                                        </div>
+                                        <div class="flex">
+                                            <dt class="font-medium text-gray-800 dark:text-white w-32">CSS:</dt>
+                                            <dd class="text-gray-600 dark:text-gray-400">Cascading Style Sheets</dd>
+                                        </div>
+                                        <div class="flex">
+                                            <dt class="font-medium text-gray-800 dark:text-white w-32">JS:</dt>
+                                            <dd class="text-gray-600 dark:text-gray-400">JavaScript Programming</dd>
+                                        </div>
+                                    </dl>
+                                    
+                                    <dl class="space-y-3">
+                                        <div>
+                                            <dt class="font-semibold text-gray-800 dark:text-white mb-1">School Hours</dt>
+                                            <dd class="text-gray-600 dark:text-gray-400 ml-4">Monday to Friday: 8:00 AM - 4:00 PM</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="font-semibold text-gray-800 dark:text-white mb-1">Office Hours</dt>
+                                            <dd class="text-gray-600 dark:text-gray-400 ml-4">Monday to Friday: 9:00 AM - 5:00 PM</dd>
+                                        </div>
+                                        <div>
+                                            <dt class="font-semibold text-gray-800 dark:text-white mb-1">Contact</dt>
+                                            <dd class="text-gray-600 dark:text-gray-400 ml-4">Phone: (555) 123-4567</dd>
+                                        </div>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Badges Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-certificate mr-3 text-green-600 dark:text-green-400"></i>
+                                Badges
+                            </h3>
+                            
+                            <!-- Status Badges -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Status Badges</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-check-circle mr-1"></i>Active
+                                    </span>
+                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-clock mr-1"></i>Pending
+                                    </span>
+                                    <span class="px-3 py-1 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-times-circle mr-1"></i>Inactive
+                                    </span>
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-sync-alt mr-1"></i>Processing
+                                    </span>
+                                    <span class="px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-star mr-1"></i>Featured
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Role Badges -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Role Badges</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-user-tie mr-1"></i>Administrator
+                                    </span>
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-chalkboard-teacher mr-1"></i>Teacher
+                                    </span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-user-graduate mr-1"></i>Student
+                                    </span>
+                                    <span class="px-3 py-1 bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-users mr-1"></i>Parent
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Achievement Badges -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Achievement Badges</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full text-sm font-bold badge-glow">
+                                        <i class="fas fa-trophy mr-1"></i>Gold Medal
+                                    </span>
+                                    <span class="px-4 py-2 bg-gradient-to-r from-gray-400 to-gray-600 text-white rounded-full text-sm font-bold">
+                                        <i class="fas fa-medal mr-1"></i>Silver Medal
+                                    </span>
+                                    <span class="px-4 py-2 bg-gradient-to-r from-orange-600 to-orange-800 text-white rounded-full text-sm font-bold">
+                                        <i class="fas fa-award mr-1"></i>Bronze Medal
+                                    </span>
+                                    <span class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-bold">
+                                        <i class="fas fa-crown mr-1"></i>Honor Roll
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Skill Badges -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Skill Level Badges</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="px-3 py-1 bg-red-500 text-white rounded-full text-xs font-medium">Beginner</span>
+                                    <span class="px-3 py-1 bg-yellow-500 text-white rounded-full text-xs font-medium">Intermediate</span>
+                                    <span class="px-3 py-1 bg-green-500 text-white rounded-full text-xs font-medium">Advanced</span>
+                                    <span class="px-3 py-1 bg-purple-500 text-white rounded-full text-xs font-medium">Expert</span>
+                                    <span class="px-3 py-1 bg-black text-white rounded-full text-xs font-medium">Master</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Gallery Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-images mr-3 text-purple-600 dark:text-purple-400"></i>
+                                Image Gallery
+                            </h3>
+                            
+                            <!-- Grid Gallery -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Grid Gallery</h4>
+                                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                    <div class="gallery-item relative group" onclick="openLightbox('https://picsum.photos/seed/gallery1/800/600')">
+                                        <img src="https://picsum.photos/seed/gallery1/400/300" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                                        <div class="gallery-overlay absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="absolute bottom-0 left-0 right-0 p-3">
+                                                <p class="text-white text-sm font-medium">School Building</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gallery-item relative group" onclick="openLightbox('https://picsum.photos/seed/gallery2/800/600')">
+                                        <img src="https://picsum.photos/seed/gallery2/400/300" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                                        <div class="gallery-overlay absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="absolute bottom-0 left-0 right-0 p-3">
+                                                <p class="text-white text-sm font-medium">Classroom</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gallery-item relative group" onclick="openLightbox('https://picsum.photos/seed/gallery3/800/600')">
+                                        <img src="https://picsum.photos/seed/gallery3/400/300" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                                        <div class="gallery-overlay absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="absolute bottom-0 left-0 right-0 p-3">
+                                                <p class="text-white text-sm font-medium">Science Lab</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gallery-item relative group" onclick="openLightbox('https://picsum.photos/seed/gallery4/800/600')">
+                                        <img src="https://picsum.photos/seed/gallery4/400/300" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                                        <div class="gallery-overlay absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="absolute bottom-0 left-0 right-0 p-3">
+                                                <p class="text-white text-sm font-medium">Library</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gallery-item relative group" onclick="openLightbox('https://picsum.photos/seed/gallery5/800/600')">
+                                        <img src="https://picsum.photos/seed/gallery5/400/300" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                                        <div class="gallery-overlay absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="absolute bottom-0 left-0 right-0 p-3">
+                                                <p class="text-white text-sm font-medium">Playground</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gallery-item relative group" onclick="openLightbox('https://picsum.photos/seed/gallery6/800/600')">
+                                        <img src="https://picsum.photos/seed/gallery6/400/300" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                                        <div class="gallery-overlay absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="absolute bottom-0 left-0 right-0 p-3">
+                                                <p class="text-white text-sm font-medium">Computer Lab</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gallery-item relative group" onclick="openLightbox('https://picsum.photos/seed/gallery7/800/600')">
+                                        <img src="https://picsum.photos/seed/gallery7/400/300" alt="Gallery Image" class="w-full h-32 object-cover rounded-lg">
+                                        <div class="gallery-overlay absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div class="absolute bottom-0 left-0 right-0 p-3">
+                                                <p class="text-white text-sm font-medium">Auditorium</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Masonry Gallery -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Masonry Gallery</h4>
+                                <div class="columns-1 md:columns-2 lg:columns-3 gap-4">
+                                    <div class="gallery-item mb-4" onclick="openLightbox('https://picsum.photos/seed/masonry1/400/600')">
+                                        <img src="https://picsum.photos/seed/masonry1/400/600" alt="Gallery Image" class="w-full rounded-lg hover:opacity-90 transition-opacity">
+                                    </div>
+                                    <div class="gallery-item mb-4" onclick="openLightbox('https://picsum.photos/seed/masonry2/400/300')">
+                                        <img src="https://picsum.photos/seed/masonry2/400/300" alt="Gallery Image" class="w-full rounded-lg hover:opacity-90 transition-opacity">
+                                    </div>
+                                    <div class="gallery-item mb-4" onclick="openLightbox('https://picsum.photos/seed/masonry3/400/500')">
+                                        <img src="https://picsum.photos/seed/masonry3/400/500" alt="Gallery Image" class="w-full rounded-lg hover:opacity-90 transition-opacity">
+                                    </div>
+                                    <div class="gallery-item mb-4" onclick="openLightbox('https://picsum.photos/seed/masonry4/400/400')">
+                                        <img src="https://picsum.photos/seed/masonry4/400/400" alt="Gallery Image" class="w-full rounded-lg hover:opacity-90 transition-opacity">
+                                    </div>
+                                    <div class="gallery-item mb-4" onclick="openLightbox('https://picsum.photos/seed/masonry5/400/350')">
+                                        <img src="https://picsum.photos/seed/masonry5/400/350" alt="Gallery Image" class="w-full rounded-lg hover:opacity-90 transition-opacity">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Carousel Gallery -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Carousel Gallery</h4>
+                                <div class="relative overflow-hidden rounded-lg">
+                                    <div class="flex transition-transform duration-500" id="galleryCarousel">
+                                        <img src="https://picsum.photos/seed/carousel1/800/400" alt="Gallery Image" class="w-full h-64 object-cover">
+                                        <img src="https://picsum.photos/seed/carousel2/800/400" alt="Gallery Image" class="w-full h-64 object-cover">
+                                        <img src="https://picsum.photos/seed/carousel3/800/400" alt="Gallery Image" class="w-full h-64 object-cover">
+                                    </div>
+                                    <button onclick="previousGallerySlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button onclick="nextGallerySlide()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-lg">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-video mr-3 text-red-600 dark:text-red-400"></i>
+                                Video Components
+                            </h3>
+                            
+                            <!-- Video Thumbnails -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div class="video-thumbnail rounded-lg overflow-hidden" onclick="playVideo('video1')">
+                                    <div class="relative">
+                                        <img src="https://picsum.photos/seed/video1/400/225" alt="Video Thumbnail" class="w-full">
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors">
+                                                <i class="fas fa-play text-white text-xl ml-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-700">
+                                        <h5 class="font-semibold text-gray-800 dark:text-white">School Introduction</h5>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Welcome to our educational institution</p>
+                                        <div class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                            <i class="fas fa-clock mr-1"></i>5:23
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="video-thumbnail rounded-lg overflow-hidden" onclick="playVideo('video2')">
+                                    <div class="relative">
+                                        <img src="https://picsum.photos/seed/video2/400/225" alt="Video Thumbnail" class="w-full">
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors">
+                                                <i class="fas fa-play text-white text-xl ml-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-700">
+                                        <h5 class="font-semibold text-gray-800 dark:text-white">Science Lab Tour</h5>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Explore our modern facilities</p>
+                                        <div class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                            <i class="fas fa-clock mr-1"></i>3:45
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="video-thumbnail rounded-lg overflow-hidden" onclick="playVideo('video3')">
+                                    <div class="relative">
+                                        <img src="https://picsum.photos/seed/video3/400/225" alt="Video Thumbnail" class="w-full">
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors">
+                                                <i class="fas fa-play text-white text-xl ml-1"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-700">
+                                        <h5 class="font-semibold text-gray-800 dark:text-white">Student Interview</h5>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Success stories from our students</p>
+                                        <div class="flex items-center mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                            <i class="fas fa-clock mr-1"></i>7:12
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Embedded Video Player -->
+                            <div class="mt-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Video Player</h4>
+                                <div class="bg-black rounded-lg overflow-hidden">
+                                    <video id="videoPlayer" class="w-full" controls poster="https://picsum.photos/seed/videoposter/800/450">
+                                        <source src="#" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Audio Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-music mr-3 text-indigo-600 dark:text-indigo-400"></i>
+                                Audio Components
+                            </h3>
+                            
+                            <!-- Audio Players -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Modern Audio Player -->
+                                <div>
+                                    <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Modern Audio Player</h4>
+                                    <div class="audio-player rounded-lg p-6 text-white">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div>
+                                                <h5 class="font-semibold">School Anthem</h5>
+                                                <p class="text-sm opacity-80">Official school song</p>
+                                            </div>
+                                            <div class="audio-wave">
+                                                <span class="h-4"></span>
+                                                <span class="h-6"></span>
+                                                <span class="h-8"></span>
+                                                <span class="h-6"></span>
+                                                <span class="h-4"></span>
+                                            </div>
+                                        </div>
+                                        <audio class="w-full" controls>
+                                            <source src="#" type="audio/mpeg">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+                                </div>
+                                
+                                <!-- Simple Audio Player -->
+                                <div>
+                                    <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Simple Audio Player</h4>
+                                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                                        <div class="flex items-center mb-3">
+                                            <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center mr-3">
+                                                <i class="fas fa-headphones text-indigo-600 dark:text-indigo-400"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="font-semibold text-gray-800 dark:text-white">Morning Assembly</h5>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Daily announcements</p>
+                                            </div>
+                                        </div>
+                                        <audio class="w-full" controls>
+                                            <source src="#" type="audio/mpeg">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Audio Playlist -->
+                            <div class="mt-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Audio Playlist</h4>
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                    <div class="space-y-3">
+                                        <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer transition-colors">
+                                            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-3">
+                                                <i class="fas fa-play text-blue-600 dark:text-blue-400 text-xs"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h6 class="font-medium text-gray-800 dark:text-white">Lesson 1: Introduction</h6>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">Duration: 15:30</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer transition-colors">
+                                            <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mr-3">
+                                                <i class="fas fa-pause text-green-600 dark:text-green-400 text-xs"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h6 class="font-medium text-gray-800 dark:text-white">Lesson 2: Basics</h6>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">Duration: 22:15</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center p-3 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer transition-colors">
+                                            <div class="w-10 h-10 bg-gray-100 dark:bg-gray-600 rounded-lg flex items-center justify-center mr-3">
+                                                <i class="fas fa-stop text-gray-600 dark:text-gray-400 text-xs"></i>
+                                            </div>
+                                            <div class="flex-1">
+                                                <h6 class="font-medium text-gray-800 dark:text-white">Lesson 3: Advanced</h6>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">Duration: 18:45</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <div class="lightbox-content relative">
+            <img id="lightboxImage" src="" alt="Lightbox Image" class="max-w-full max-h-full rounded-lg">
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 bg-white/80 hover:bg-white text-gray-800 rounded-full p-2">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Video Modal -->
+    <div id="videoModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-75">
+            <div class="relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="bg-black">
+                    <video id="modalVideo" class="w-full" controls autoplay>
+                        <source src="#" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="p-4">
+                    <h3 id="videoTitle" class="text-lg font-medium text-gray-900 dark:text-white">Video Title</h3>
+                    <p id="videoDescription" class="mt-1 text-sm text-gray-600 dark:text-gray-400">Video description</p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6">
+                    <button onclick="closeVideoModal()" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+        
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+        
+        // Sidebar Toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        // User Dropdown
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        userDropdown.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+        
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page-content');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = item.dataset.page;
+                
+                // Update active nav item
+                navItems.forEach(nav => {
+                    nav.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                    nav.classList.add('text-gray-700', 'dark:text-gray-300');
+                });
+                item.classList.remove('text-gray-700', 'dark:text-gray-300');
+                item.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                
+                // Show corresponding page
+                pages.forEach(page => {
+                    page.classList.add('hidden');
+                });
+                const targetElement = document.getElementById(targetPage + 'Page');
+                if (targetElement) {
+                    targetElement.classList.remove('hidden');
+                }
+                
+                // Close sidebar on mobile
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        });
+        
+        // Gallery Functions
+        let currentGallerySlide = 0;
+        
+        function openLightbox(imageSrc) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            lightboxImage.src = imageSrc;
+            lightbox.classList.add('active');
+        }
+        
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+        }
+        
+        function nextGallerySlide() {
+            const carousel = document.getElementById('galleryCarousel');
+            const slides = carousel.children.length;
+            currentGallerySlide = (currentGallerySlide + 1) % slides;
+            carousel.style.transform = `translateX(-${currentGallerySlide * 100}%)`;
+        }
+        
+        function previousGallerySlide() {
+            const carousel = document.getElementById('galleryCarousel');
+            const slides = carousel.children.length;
+            currentGallerySlide = (currentGallerySlide - 1 + slides) % slides;
+            carousel.style.transform = `translateX(-${currentGallerySlide * 100}%)`;
+        }
+        
+        // Video Functions
+        function playVideo(videoId) {
+            const modal = document.getElementById('videoModal');
+            const video = document.getElementById('modalVideo');
+            const title = document.getElementById('videoTitle');
+            const description = document.getElementById('videoDescription');
+            
+            // Set video content based on ID
+            const videoData = {
+                video1: {
+                    title: 'School Introduction',
+                    description: 'Welcome to our educational institution'
+                },
+                video2: {
+                    title: 'Science Lab Tour',
+                    description: 'Explore our modern facilities'
+                },
+                video3: {
+                    title: 'Student Interview',
+                    description: 'Success stories from our students'
+                }
+            };
+            
+            title.textContent = videoData[videoId].title;
+            description.textContent = videoData[videoId].description;
+            
+            modal.classList.remove('hidden');
+        }
+        
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const video = document.getElementById('modalVideo');
+            video.pause();
+            modal.classList.add('hidden');
+        }
+        
+        // Close lightbox on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+                closeVideoModal();
+            }
+        });
+        
+        // Close lightbox on backdrop click
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+        
+        // Auto-rotate gallery carousel
+        setInterval(() => {
+            nextGallerySlide();
+        }, 5000);
+        
+        // Responsive handling
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('-translate-x-full');
+            }
+        });
+    </script>
+</body>
+</html>

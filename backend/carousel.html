@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management Dashboard - UI Components</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'carousel-slide': 'carouselSlide 0.5s ease-in-out',
+                        'popup-in': 'popupIn 0.3s ease-out',
+                        'hero-float': 'heroFloat 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        carouselSlide: {
+                            '0%': { transform: translateX(100%) },
+                            '100%': { transform: translateX(0) }
+                        },
+                        popupIn: {
+                            '0%': { 
+                                opacity: '0',
+                                transform: 'scale(0.9) translateY(20px)'
+                            },
+                            '100%': { 
+                                opacity: '1',
+                                transform: 'scale(1) translateY(0)'
+                            }
+                        },
+                        heroFloat: {
+                            '0%, 100%': { transform: translateY(0px) },
+                            '50%': { transform: translateY(-20px) }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .dark .scrollbar-thin::-webkit-scrollbar-track {
+            background: #374151;
+        }
+        .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+        
+        /* Carousel Styles */
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            position: relative;
+        }
+        .carousel-indicator {
+            transition: all 0.3s ease;
+        }
+        .carousel-indicator.active {
+            background-color: #3b82f6;
+            width: 2rem;
+        }
+        
+        /* Badge Styles */
+        .badge-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .badge-bounce {
+            animation: bounce 1s infinite;
+        }
+        
+        /* Popup Styles */
+        .popup-backdrop {
+            backdrop-filter: blur(4px);
+            transition: opacity 0.3s ease-in-out;
+        }
+        .popup-content {
+            animation: popupIn 0.3s ease-out;
+        }
+        
+        /* Hero Styles */
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .hero-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        
+        /* Floating Animation */
+        .float-animation {
+            animation: heroFloat 3s ease-in-out infinite;
+        }
+        
+        /* Tooltip Styles */
+        .tooltip {
+            position: relative;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col fixed lg:relative lg:translate-x-0 -translate-x-full h-full z-30">
+            <!-- Logo -->
+            <div class="p-6 border-b dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-800 dark:text-white">EduManage</h1>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto scrollbar-thin p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" data-page="dashboard" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-home w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="students" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-user-graduate w-5"></i>
+                            <span>Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="teachers" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-chalkboard-teacher w-5"></i>
+                            <span>Teachers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="classes" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-school w-5"></i>
+                            <span>Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="attendance" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-calendar-check w-5"></i>
+                            <span>Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="exams" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-clipboard-list w-5"></i>
+                            <span>Exams</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="fees" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-dollar-sign w-5"></i>
+                            <span>Fees</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="ui-components" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-all">
+                            <i class="fas fa-layer-group w-5"></i>
+                            <span>UI Components</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="settings" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Profile in Sidebar -->
+            <div class="p-4 border-t dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <img src="https://picsum.photos/seed/admin/40/40" alt="Admin" class="w-10 h-10 rounded-full">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Admin User</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">admin@school.edu</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center space-x-4">
+                        <button id="sidebarToggle" class="lg:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <!-- Search Bar -->
+                        <div class="relative hidden md:block">
+                            <input type="text" placeholder="Search UI components..." 
+                                class="w-64 pl-10 pr-4 py-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <!-- Theme Toggle -->
+                        <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:inline"></i>
+                        </button>
+                        
+                        <!-- Notifications -->
+                        <button class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        
+                        <!-- User Dropdown -->
+                        <div class="relative">
+                            <button id="userDropdown" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <img src="https://picsum.photos/seed/admin/32/32" alt="User" class="w-8 h-8 rounded-full">
+                                <i class="fas fa-chevron-down text-xs text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            
+                            <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 z-50">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-user mr-2"></i> Profile
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-cog mr-2"></i> Settings
+                                </a>
+                                <hr class="my-1 dark:border-gray-700">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto scrollbar-thin bg-gray-50 dark:bg-gray-900">
+                <div class="p-6">
+                    <!-- UI Components Page -->
+                    <div id="ui-componentsPage" class="page-content">
+                        <!-- Page Header -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">UI Components Showcase</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Complete collection of carousels, badges, popups, and hero sections</p>
+                        </div>
+                        
+                        <!-- Hero Sections -->
+                        <div class="mb-8">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-flag mr-3 text-purple-600 dark:text-purple-400"></i>
+                                Hero Sections
+                            </h3>
+                            
+                            <!-- Hero 1: Gradient Hero -->
+                            <div class="mb-6 rounded-xl overflow-hidden shadow-lg">
+                                <div class="hero-gradient hero-pattern text-white py-20 px-8">
+                                    <div class="max-w-4xl mx-auto">
+                                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                                            <div>
+                                                <h1 class="text-4xl lg:text-5xl font-bold mb-6 float-animation">
+                                                    Welcome to EduManage Pro
+                                                </h1>
+                                                <p class="text-xl mb-8 text-blue-100">
+                                                    Transform your educational institution with our comprehensive management system. Streamline operations, enhance communication, and drive academic excellence.
+                                                </p>
+                                                <div class="flex flex-col sm:flex-row gap-4">
+                                                    <button class="px-8 py-3 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                                                        Get Started Free
+                                                    </button>
+                                                    <button class="px-8 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition-colors">
+                                                        Watch Demo
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="hidden lg:block">
+                                                <img src="https://picsum.photos/seed/hero1/600/400" alt="Hero" class="rounded-lg shadow-2xl">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Hero 2: Split Hero -->
+                            <div class="mb-6 rounded-xl overflow-hidden shadow-lg bg-white dark:bg-gray-800">
+                                <div class="grid grid-cols-1 lg:grid-cols-2">
+                                    <div class="p-12 lg:p-16 flex flex-col justify-center">
+                                        <div class="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
+                                            <i class="fas fa-star mr-2"></i> Trusted by 1000+ Schools
+                                        </div>
+                                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                                            Empower Education with Smart Management
+                                        </h2>
+                                        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                                            Join thousands of educational institutions that have transformed their operations with our intuitive platform.
+                                        </p>
+                                        <div class="flex items-center space-x-8">
+                                            <div>
+                                                <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">98%</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Satisfaction Rate</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-3xl font-bold text-green-600 dark:text-green-400">24/7</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Support</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">50K+</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Users</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relative h-96 lg:h-auto">
+                                        <img src="https://picsum.photos/seed/hero2/600/600" alt="Hero" class="absolute inset-0 w-full h-full object-cover">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Hero 3: Minimal Hero -->
+                            <div class="mb-6 rounded-xl overflow-hidden shadow-lg bg-gray-50 dark:bg-gray-800">
+                                <div class="py-16 px-8 text-center">
+                                    <div class="max-w-3xl mx-auto">
+                                        <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-6">
+                                            <i class="fas fa-graduation-cap text-3xl text-blue-600 dark:text-blue-400"></i>
+                                        </div>
+                                        <h2 class="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                                            Simple. Powerful. Effective.
+                                        </h2>
+                                        <p class="text-xl text-gray-600 dark:text-gray-400 mb-8">
+                                            Experience the future of school management with our cutting-edge platform designed for modern educational needs.
+                                        </p>
+                                        <div class="flex justify-center space-x-4">
+                                            <button class="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                                                Start Free Trial
+                                            </button>
+                                            <button class="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                                Learn More
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Carousels Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-images mr-3 text-blue-600 dark:text-blue-400"></i>
+                                Carousels
+                            </h3>
+                            
+                            <!-- Image Carousel -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Image Carousel with Controls</h4>
+                                <div class="carousel-container rounded-xl overflow-hidden shadow-lg">
+                                    <div class="carousel-track" id="imageCarousel">
+                                        <div class="carousel-slide">
+                                            <img src="https://picsum.photos/seed/slide1/800/400" alt="Slide 1" class="w-full h-96 object-cover">
+                                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-8">
+                                                <h3 class="text-2xl font-bold text-white mb-2">Modern Education System</h3>
+                                                <p class="text-white/80">Transform the way you manage your school</p>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-slide">
+                                            <img src="https://picsum.photos/seed/slide2/800/400" alt="Slide 2" class="w-full h-96 object-cover">
+                                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-8">
+                                                <h3 class="text-2xl font-bold text-white mb-2">Advanced Analytics</h3>
+                                                <p class="text-white/80">Track performance and make data-driven decisions</p>
+                                            </div>
+                                        </div>
+                                        <div class="carousel-slide">
+                                            <img src="https://picsum.photos/seed/slide3/800/400" alt="Slide 3" class="w-full h-96 object-cover">
+                                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-8">
+                                                <h3 class="text-2xl font-bold text-white mb-2">Parent Engagement</h3>
+                                                <p class="text-white/80">Keep parents informed and involved</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="previousSlide('imageCarousel')" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-colors">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <button onclick="nextSlide('imageCarousel')" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 shadow-lg transition-colors">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                                        <button onclick="goToSlide('imageCarousel', 0)" class="carousel-indicator w-2 h-2 bg-white/50 rounded-full"></button>
+                                        <button onclick="goToSlide('imageCarousel', 1)" class="carousel-indicator w-2 h-2 bg-white/50 rounded-full"></button>
+                                        <button onclick="goToSlide('imageCarousel', 2)" class="carousel-indicator w-2 h-2 bg-white/50 rounded-full"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Card Carousel -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Card Carousel</h4>
+                                <div class="relative">
+                                    <div class="carousel-container overflow-hidden rounded-xl">
+                                        <div class="carousel-track" id="cardCarousel">
+                                            <div class="carousel-slide px-4">
+                                                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
+                                                    <i class="fas fa-graduation-cap text-4xl mb-4"></i>
+                                                    <h3 class="text-xl font-bold mb-2">Student Management</h3>
+                                                    <p class="text-blue-100">Comprehensive student information system with attendance tracking and performance monitoring.</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-slide px-4">
+                                                <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
+                                                    <i class="fas fa-chalkboard-teacher text-4xl mb-4"></i>
+                                                    <h3 class="text-xl font-bold mb-2">Teacher Portal</h3>
+                                                    <p class="text-green-100">Dedicated portal for teachers to manage classes, assignments, and student progress.</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-slide px-4">
+                                                <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
+                                                    <i class="fas fa-chart-line text-4xl mb-4"></i>
+                                                    <h3 class="text-xl font-bold mb-2">Analytics Dashboard</h3>
+                                                    <p class="text-purple-100">Real-time insights and reports to track institutional performance.</p>
+                                                </div>
+                                            </div>
+                                            <div class="carousel-slide px-4">
+                                                <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white">
+                                                    <i class="fas fa-comments text-4xl mb-4"></i>
+                                                    <h3 class="text-xl font-bold mb-2">Communication Hub</h3>
+                                                    <p class="text-orange-100">Seamless communication between students, teachers, and parents.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button onclick="previousSlide('cardCarousel')" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-700 rounded-full p-2 shadow-lg -ml-4 z-10">
+                                        <i class="fas fa-chevron-left text-gray-600 dark:text-gray-300"></i>
+                                    </button>
+                                    <button onclick="nextSlide('cardCarousel')" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-700 rounded-full p-2 shadow-lg -mr-4 z-10">
+                                        <i class="fas fa-chevron-right text-gray-600 dark:text-gray-300"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Testimonial Carousel -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Testimonial Carousel</h4>
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-8">
+                                    <div class="carousel-container">
+                                        <div class="carousel-track" id="testimonialCarousel">
+                                            <div class="carousel-slide text-center">
+                                                <img src="https://picsum.photos/seed/person1/80/80" alt="Person" class="w-20 h-20 rounded-full mx-auto mb-4">
+                                                <p class="text-lg text-gray-600 dark:text-gray-400 italic mb-4">
+                                                    "EduManage has transformed how we operate our school. The intuitive interface and powerful features have saved us countless hours."
+                                                </p>
+                                                <h5 class="font-semibold text-gray-800 dark:text-white">Sarah Johnson</h5>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Principal, Lincoln High School</p>
+                                            </div>
+                                            <div class="carousel-slide text-center">
+                                                <img src="https://picsum.photos/seed/person2/80/80" alt="Person" class="w-20 h-20 rounded-full mx-auto mb-4">
+                                                <p class="text-lg text-gray-600 dark:text-gray-400 italic mb-4">
+                                                    "The best investment we've made for our school. Student performance has improved significantly since implementation."
+                                                </p>
+                                                <h5 class="font-semibold text-gray-800 dark:text-white">Michael Chen</h5>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Director, Riverside Academy</p>
+                                            </div>
+                                            <div class="carousel-slide text-center">
+                                                <img src="https://picsum.photos/seed/person3/80/80" alt="Person" class="w-20 h-20 rounded-full mx-auto mb-4">
+                                                <p class="text-lg text-gray-600 dark:text-gray-400 italic mb-4">
+                                                    "Outstanding support and features. Our teachers love how easy it is to manage classes and track progress."
+                                                </p>
+                                                <h5 class="font-semibold text-gray-800 dark:text-white">Emily Davis</h5>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400">Administrator, Green Valley School</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center mt-6 space-x-2">
+                                        <button onclick="goToSlide('testimonialCarousel', 0)" class="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full"></button>
+                                        <button onclick="goToSlide('testimonialCarousel', 1)" class="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full"></button>
+                                        <button onclick="goToSlide('testimonialCarousel', 2)" class="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Badges Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-certificate mr-3 text-green-600 dark:text-green-400"></i>
+                                Badges
+                            </h3>
+                            
+                            <!-- Basic Badges -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Basic Badges</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-sm font-medium">Default</span>
+                                    <span class="px-3 py-1 bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">Gray</span>
+                                    <span class="px-3 py-1 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded-full text-sm font-medium">Red</span>
+                                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full text-sm font-medium">Yellow</span>
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full text-sm font-medium">Green</span>
+                                    <span class="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-400 rounded-full text-sm font-medium">Indigo</span>
+                                    <span class="px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 rounded-full text-sm font-medium">Purple</span>
+                                    <span class="px-3 py-1 bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-400 rounded-full text-sm font-medium">Pink</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Badge Sizes -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Badge Sizes</h4>
+                                <div class="flex flex-wrap items-center gap-3">
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded text-xs font-medium">Extra Small</span>
+                                    <span class="px-2.5 py-0.5 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded text-sm font-medium">Small</span>
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-sm font-medium">Medium</span>
+                                    <span class="px-4 py-1.5 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-base font-medium">Large</span>
+                                    <span class="px-6 py-2 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-lg font-medium">Extra Large</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Badge with Icons -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Badges with Icons</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-check-circle mr-1.5"></i>
+                                        Completed
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-clock mr-1.5"></i>
+                                        Pending
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-exclamation-circle mr-1.5"></i>
+                                        Urgent
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-star mr-1.5"></i>
+                                        Featured
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 rounded-full text-sm font-medium">
+                                        <i class="fas fa-crown mr-1.5"></i>
+                                        Premium
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Animated Badges -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Animated Badges</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="inline-flex items-center px-3 py-1 bg-red-500 text-white rounded-full text-sm font-medium badge-pulse">
+                                        <i class="fas fa-circle text-xs mr-2"></i>
+                                        Live
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-green-500 text-white rounded-full text-sm font-medium badge-bounce">
+                                        <i class="fas fa-bell mr-2"></i>
+                                        New
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded-full text-sm font-medium">
+                                        <i class="fas fa-sync-alt fa-spin mr-2"></i>
+                                        Loading
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-purple-500 text-white rounded-full text-sm font-medium">
+                                        <span class="flex h-2 w-2 mr-2">
+                                            <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-white opacity-75"></span>
+                                            <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                                        </span>
+                                        Active
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Badge with Numbers -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Badge with Numbers</h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <span class="inline-flex items-center px-3 py-1 bg-blue-500 text-white rounded-full text-sm font-medium">
+                                        <i class="fas fa-envelope mr-2"></i>
+                                        5 Messages
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-green-500 text-white rounded-full text-sm font-medium">
+                                        <i class="fas fa-tasks mr-2"></i>
+                                        12 Tasks
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-orange-500 text-white rounded-full text-sm font-medium">
+                                        <i class="fas fa-fire mr-2"></i>
+                                        99+ Points
+                                    </span>
+                                    <span class="inline-flex items-center px-3 py-1 bg-red-500 text-white rounded-full text-sm font-medium">
+                                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                                        3 Alerts
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Popups Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-external-link-alt mr-3 text-orange-600 dark:text-orange-400"></i>
+                                Popups & Tooltips
+                            </h3>
+                            
+                            <!-- Popup Buttons -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                                <button onclick="openPopup('successPopup')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                    <i class="fas fa-check-circle mr-2"></i>Success Popup
+                                </button>
+                                <button onclick="openPopup('infoPopup')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    <i class="fas fa-info-circle mr-2"></i>Info Popup
+                                </button>
+                                <button onclick="openPopup('warningPopup')" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>Warning Popup
+                                </button>
+                                <button onclick="openPopup('errorPopup')" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                                    <i class="fas fa-times-circle mr-2"></i>Error Popup
+                                </button>
+                            </div>
+                            
+                            <!-- Tooltips -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Tooltips</h4>
+                                <div class="flex flex-wrap gap-4">
+                                    <div class="tooltip relative">
+                                        <button class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                            Hover me
+                                        </button>
+                                        <span class="tooltip-text absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-sm rounded-lg whitespace-nowrap">
+                                            This is a tooltip!
+                                        </span>
+                                    </div>
+                                    <div class="tooltip relative">
+                                        <button class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                            Top tooltip
+                                        </button>
+                                        <span class="tooltip-text absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-sm rounded-lg whitespace-nowrap">
+                                            Appears on top
+                                        </span>
+                                    </div>
+                                    <div class="tooltip relative">
+                                        <button class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                                            <i class="fas fa-question-circle"></i>
+                                        </button>
+                                        <span class="tooltip-text absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-sm rounded-lg whitespace-nowrap">
+                                            Help information
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Success Popup -->
+    <div id="successPopup" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="popup-backdrop flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-50">
+            <div class="popup-content relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-check text-green-600 dark:text-green-400 text-xl"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                                Success!
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Your action has been completed successfully. The changes have been saved and applied.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button onclick="closePopup('successPopup')" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Great!
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info Popup -->
+    <div id="infoPopup" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="popup-backdrop flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-50">
+            <div class="popup-content relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-info text-blue-600 dark:text-blue-400 text-xl"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                                Information
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Here's some important information you should know about this feature. Please read it carefully.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button onclick="closePopup('infoPopup')" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Got it
+                    </button>
+                    <button onclick="closePopup('infoPopup')" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Warning Popup -->
+    <div id="warningPopup" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="popup-backdrop flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-50">
+            <div class="popup-content relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                                Warning
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Please be careful with this action. It may have unintended consequences. Are you sure you want to proceed?
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button onclick="closePopup('warningPopup')" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Proceed
+                    </button>
+                    <button onclick="closePopup('warningPopup')" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Error Popup -->
+    <div id="errorPopup" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="popup-backdrop flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-50">
+            <div class="popup-content relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-times text-red-600 dark:text-red-400 text-xl"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                                Error
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Something went wrong. Please try again later or contact support if the problem persists.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button onclick="closePopup('errorPopup')" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Try Again
+                    </button>
+                    <button onclick="closePopup('errorPopup')" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+        
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+        
+        // Sidebar Toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        // User Dropdown
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        userDropdown.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+        
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page-content');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = item.dataset.page;
+                
+                // Update active nav item
+                navItems.forEach(nav => {
+                    nav.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                    nav.classList.add('text-gray-700', 'dark:text-gray-300');
+                });
+                item.classList.remove('text-gray-700', 'dark:text-gray-300');
+                item.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                
+                // Show corresponding page
+                pages.forEach(page => {
+                    page.classList.add('hidden');
+                });
+                const targetElement = document.getElementById(targetPage + 'Page');
+                if (targetElement) {
+                    targetElement.classList.remove('hidden');
+                }
+                
+                // Close sidebar on mobile
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        });
+        
+        // Carousel Functions
+        let currentSlide = {
+            imageCarousel: 0,
+            cardCarousel: 0,
+            testimonialCarousel: 0
+        };
+        
+        function updateCarousel(carouselId) {
+            const carousel = document.getElementById(carouselId);
+            const slides = carousel.children.length;
+            const slideWidth = 100 / slides;
+            carousel.style.transform = `translateX(-${currentSlide[carouselId] * slideWidth}%)`;
+            
+            // Update indicators
+            const indicators = carousel.parentElement.querySelectorAll('.carousel-indicator');
+            indicators.forEach((indicator, index) => {
+                if (index === currentSlide[carouselId]) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+        
+        function nextSlide(carouselId) {
+            const carousel = document.getElementById(carouselId);
+            const slides = carousel.children.length;
+            currentSlide[carouselId] = (currentSlide[carouselId] + 1) % slides;
+            updateCarousel(carouselId);
+        }
+        
+        function previousSlide(carouselId) {
+            const carousel = document.getElementById(carouselId);
+            const slides = carousel.children.length;
+            currentSlide[carouselId] = (currentSlide[carouselId] - 1 + slides) % slides;
+            updateCarousel(carouselId);
+        }
+        
+        function goToSlide(carouselId, slideIndex) {
+            currentSlide[carouselId] = slideIndex;
+            updateCarousel(carouselId);
+        }
+        
+        // Auto-rotate carousels
+        setInterval(() => {
+            nextSlide('imageCarousel');
+        }, 5000);
+        
+        setInterval(() => {
+            nextSlide('testimonialCarousel');
+        }, 4000);
+        
+        // Popup Functions
+        function openPopup(popupId) {
+            document.getElementById(popupId).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closePopup(popupId) {
+            document.getElementById(popupId).classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close popup on backdrop click
+        document.querySelectorAll('.popup-backdrop').forEach(backdrop => {
+            backdrop.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    const popup = this.closest('[id$="Popup"]');
+                    if (popup) {
+                        closePopup(popup.id);
+                    }
+                }
+            });
+        });
+        
+        // Close popup on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const openPopup = document.querySelector('[id$="Popup"]:not(.hidden)');
+                if (openPopup) {
+                    closePopup(openPopup.id);
+                }
+            }
+        });
+        
+        // Responsive handling
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('-translate-x-full');
+            }
+        });
+    </script>
+</body>
+</html>
