@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management Dashboard - Color & Typography</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&family=Open+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Raleway:wght@100;200;300;400;500;600;700;800;900&family=Source+Sans+Pro:wght@200;300;400;600;700;900&family=Lato:wght@100;300;400;700;900&family=Nunito:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                        'roboto': ['Roboto', 'sans-serif'],
+                        'open-sans': ['Open Sans', 'sans-serif'],
+                        'playfair': ['Playfair Display', 'serif'],
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'raleway': ['Raleway', 'sans-serif'],
+                        'source-sans': ['Source Sans Pro', 'sans-serif'],
+                        'lato': ['Lato', 'sans-serif'],
+                        'nunito': ['Nunito', 'sans-serif'],
+                    },
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .dark .scrollbar-thin::-webkit-scrollbar-track {
+            background: #374151;
+        }
+        .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+        .color-swatch {
+            transition: all 0.3s ease;
+        }
+        .color-swatch:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .copy-btn {
+            transition: all 0.2s ease;
+        }
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+        .copied-toast {
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .font-preview {
+            line-height: 1.6;
+        }
+        .color-card {
+            transition: all 0.3s ease;
+        }
+        .color-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col fixed lg:relative lg:translate-x-0 -translate-x-full h-full z-30">
+            <!-- Logo -->
+            <div class="p-6 border-b dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-800 dark:text-white">EduManage</h1>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto scrollbar-thin p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" data-page="dashboard" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-home w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="students" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-user-graduate w-5"></i>
+                            <span>Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="teachers" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-chalkboard-teacher w-5"></i>
+                            <span>Teachers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="classes" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-school w-5"></i>
+                            <span>Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="attendance" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-calendar-check w-5"></i>
+                            <span>Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="exams" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-clipboard-list w-5"></i>
+                            <span>Exams</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="fees" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-dollar-sign w-5"></i>
+                            <span>Fees</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="buttons" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-square w-5"></i>
+                            <span>Buttons</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="colors" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-all">
+                            <i class="fas fa-palette w-5"></i>
+                            <span>Colors & Typography</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="settings" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Profile in Sidebar -->
+            <div class="p-4 border-t dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <img src="https://picsum.photos/seed/admin/40/40" alt="Admin" class="w-10 h-10 rounded-full">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Admin User</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">admin@school.edu</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center space-x-4">
+                        <button id="sidebarToggle" class="lg:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <!-- Search Bar -->
+                        <div class="relative hidden md:block">
+                            <input type="text" placeholder="Search colors, fonts, styles..." 
+                                class="w-64 pl-10 pr-4 py-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <!-- Theme Toggle -->
+                        <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:inline"></i>
+                        </button>
+                        
+                        <!-- Notifications -->
+                        <button class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        
+                        <!-- User Dropdown -->
+                        <div class="relative">
+                            <button id="userDropdown" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <img src="https://picsum.photos/seed/admin/32/32" alt="User" class="w-8 h-8 rounded-full">
+                                <i class="fas fa-chevron-down text-xs text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            
+                            <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 z-50">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-user mr-2"></i> Profile
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-cog mr-2"></i> Settings
+                                </a>
+                                <hr class="my-1 dark:border-gray-700">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto scrollbar-thin bg-gray-50 dark:bg-gray-900">
+                <div class="p-6">
+                    <!-- Colors & Typography Page -->
+                    <div id="colorsPage" class="page-content">
+                        <!-- Page Header -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Colors & Typography</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Complete color palette and typography system for your design</p>
+                        </div>
+                        
+                        <!-- Primary Colors -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-paint-brush mr-3 text-blue-600 dark:text-blue-400"></i>
+                                Primary Colors
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-24 bg-blue-500"></div>
+                                    <div class="p-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-white">Blue 500</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">#3B82F6</p>
+                                        <button class="copy-btn mt-2 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300" onclick="copyToClipboard('#3B82F6')">
+                                            <i class="fas fa-copy mr-1"></i>Copy
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-24 bg-blue-600"></div>
+                                    <div class="p-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-white">Blue 600</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">#2563EB</p>
+                                        <button class="copy-btn mt-2 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300" onclick="copyToClipboard('#2563EB')">
+                                            <i class="fas fa-copy mr-1"></i>Copy
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-24 bg-blue-700"></div>
+                                    <div class="p-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-white">Blue 700</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">#1D4ED8</p>
+                                        <button class="copy-btn mt-2 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300" onclick="copyToClipboard('#1D4ED8')">
+                                            <i class="fas fa-copy mr-1"></i>Copy
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-24 bg-blue-800"></div>
+                                    <div class="p-4">
+                                        <h4 class="font-semibold text-gray-800 dark:text-white">Blue 800</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">#1E40AF</p>
+                                        <button class="copy-btn mt-2 text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300" onclick="copyToClipboard('#1E40AF')">
+                                            <i class="fas fa-copy mr-1"></i>Copy
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Secondary Colors -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-swatchbook mr-3 text-purple-600 dark:text-purple-400"></i>
+                                Secondary Colors
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-20 bg-purple-500"></div>
+                                    <div class="p-3 text-center">
+                                        <h4 class="font-medium text-sm text-gray-800 dark:text-white">Purple</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#A855F7</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-20 bg-pink-500"></div>
+                                    <div class="p-3 text-center">
+                                        <h4 class="font-medium text-sm text-gray-800 dark:text-white">Pink</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#EC4899</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-20 bg-indigo-500"></div>
+                                    <div class="p-3 text-center">
+                                        <h4 class="font-medium text-sm text-gray-800 dark:text-white">Indigo</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#6366F1</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-20 bg-teal-500"></div>
+                                    <div class="p-3 text-center">
+                                        <h4 class="font-medium text-sm text-gray-800 dark:text-white">Teal</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#14B8A6</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-20 bg-cyan-500"></div>
+                                    <div class="p-3 text-center">
+                                        <h4 class="font-medium text-sm text-gray-800 dark:text-white">Cyan</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#06B6D4</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-20 bg-emerald-500"></div>
+                                    <div class="p-3 text-center">
+                                        <h4 class="font-medium text-sm text-gray-800 dark:text-white">Emerald</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#10B981</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Neutral Colors -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-adjust mr-3 text-gray-600 dark:text-gray-400"></i>
+                                Neutral Colors
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-50 dark:bg-gray-900"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 50</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#F9FAFB</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-100 dark:bg-gray-800"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 100</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#F3F4F6</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-200 dark:bg-gray-700"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 200</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#E5E7EB</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-300 dark:bg-gray-600"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 300</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#D1D5DB</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-400 dark:bg-gray-500"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 400</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#9CA3AF</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-500 dark:bg-gray-400"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 500</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#6B7280</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-600 dark:bg-gray-300"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 600</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#4B5563</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-700 dark:bg-gray-200"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 700</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#374151</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-800 dark:bg-gray-100"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 800</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#1F2937</p>
+                                    </div>
+                                </div>
+                                <div class="color-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                                    <div class="h-16 bg-gray-900 dark:bg-gray-50"></div>
+                                    <div class="p-2 text-center">
+                                        <h4 class="font-medium text-xs text-gray-800 dark:text-white">Gray 900</h4>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400">#111827</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Semantic Colors -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-exclamation-circle mr-3 text-green-600 dark:text-green-400"></i>
+                                Semantic Colors
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Success Colors</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Green 100</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#D1FAE5</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-green-500 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Green 500</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#10B981</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-green-600 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Green 600</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#059669</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Warning Colors</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Yellow 100</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#FEF3C7</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-yellow-500 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Yellow 500</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#EAB308</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-yellow-600 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Yellow 600</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#CA8A04</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Error Colors</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Red 100</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#FEE2E2</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-red-500 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Red 500</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#EF4444</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-12 h-12 bg-red-600 rounded-lg"></div>
+                                            <div>
+                                                <p class="font-medium text-gray-800 dark:text-white">Red 600</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">#DC2626</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Background Colors -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-fill mr-3 text-indigo-600 dark:text-indigo-400"></i>
+                                Background Colors
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Light Backgrounds</h4>
+                                    <div class="space-y-3">
+                                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg border dark:border-gray-700">
+                                            <p class="text-sm text-gray-800 dark:text-white">White Background</p>
+                                            <p class="text-xs text-gray-600 dark:text-gray-400">bg-white / dark:bg-gray-800</p>
+                                        </div>
+                                        <div class="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border dark:border-gray-700">
+                                            <p class="text-sm text-gray-800 dark:text-white">Gray 50 Background</p>
+                                            <p class="text-xs text-gray-600 dark:text-gray-400">bg-gray-50 / dark:bg-gray-900</p>
+                                        </div>
+                                        <div class="p-4 bg-gray-100 dark:bg-gray-800 rounded-lg border dark:border-gray-700">
+                                            <p class="text-sm text-gray-800 dark:text-white">Gray 100 Background</p>
+                                            <p class="text-xs text-gray-600 dark:text-gray-400">bg-gray-100 / dark:bg-gray-800</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Colored Backgrounds</h4>
+                                    <div class="space-y-3">
+                                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border dark:border-blue-800">
+                                            <p class="text-sm text-blue-800 dark:text-blue-200">Blue 50 Background</p>
+                                            <p class="text-xs text-blue-600 dark:text-blue-400">bg-blue-50 / dark:bg-blue-900/20</p>
+                                        </div>
+                                        <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border dark:border-green-800">
+                                            <p class="text-sm text-green-800 dark:text-green-200">Green 50 Background</p>
+                                            <p class="text-xs text-green-600 dark:text-green-400">bg-green-50 / dark:bg-green-900/20</p>
+                                        </div>
+                                        <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border dark:border-purple-800">
+                                            <p class="text-sm text-purple-800 dark:text-purple-200">Purple 50 Background</p>
+                                            <p class="text-xs text-purple-600 dark:text-purple-400">bg-purple-50 / dark:bg-purple-900/20</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Gradient Backgrounds</h4>
+                                    <div class="space-y-3">
+                                        <div class="p-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
+                                            <p class="text-sm text-white">Blue to Purple Gradient</p>
+                                            <p class="text-xs text-blue-100">bg-gradient-to-r from-blue-500 to-purple-600</p>
+                                        </div>
+                                        <div class="p-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-lg">
+                                            <p class="text-sm text-white">Green to Blue Gradient</p>
+                                            <p class="text-xs text-green-100">bg-gradient-to-r from-green-400 to-blue-500</p>
+                                        </div>
+                                        <div class="p-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg">
+                                            <p class="text-sm text-white">Yellow to Orange Gradient</p>
+                                            <p class="text-xs text-yellow-100">bg-gradient-to-r from-yellow-400 to-orange-500</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Typography -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-font mr-3 text-pink-600 dark:text-pink-400"></i>
+                                Typography System
+                            </h3>
+                            
+                            <!-- Font Families -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Font Families</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div class="p-4 border dark:border-gray-700 rounded-lg">
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Inter (Default)</h5>
+                                        <p class="font-preview text-2xl text-gray-800 dark:text-white" style="font-family: 'Inter', sans-serif;">
+                                            The quick brown fox jumps over the lazy dog
+                                        </p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">font-family: 'Inter', sans-serif</p>
+                                    </div>
+                                    <div class="p-4 border dark:border-gray-700 rounded-lg">
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Roboto</h5>
+                                        <p class="font-preview text-2xl text-gray-800 dark:text-white" style="font-family: 'Roboto', sans-serif;">
+                                            The quick brown fox jumps over the lazy dog
+                                        </p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">font-family: 'Roboto', sans-serif</p>
+                                    </div>
+                                    <div class="p-4 border dark:border-gray-700 rounded-lg">
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Open Sans</h5>
+                                        <p class="font-preview text-2xl text-gray-800 dark:text-white" style="font-family: 'Open Sans', sans-serif;">
+                                            The quick brown fox jumps over the lazy dog
+                                        </p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">font-family: 'Open Sans', sans-serif</p>
+                                    </div>
+                                    <div class="p-4 border dark:border-gray-700 rounded-lg">
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Playfair Display</h5>
+                                        <p class="font-preview text-2xl text-gray-800 dark:text-white" style="font-family: 'Playfair Display', serif;">
+                                            The quick brown fox jumps over the lazy dog
+                                        </p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">font-family: 'Playfair Display', serif</p>
+                                    </div>
+                                    <div class="p-4 border dark:border-gray-700 rounded-lg">
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Montserrat</h5>
+                                        <p class="font-preview text-2xl text-gray-800 dark:text-white" style="font-family: 'Montserrat', sans-serif;">
+                                            The quick brown fox jumps over the lazy dog
+                                        </p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">font-family: 'Montserrat', sans-serif</p>
+                                    </div>
+                                    <div class="p-4 border dark:border-gray-700 rounded-lg">
+                                        <h5 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Poppins</h5>
+                                        <p class="font-preview text-2xl text-gray-800 dark:text-white" style="font-family: 'Poppins', sans-serif;">
+                                            The quick brown fox jumps over the lazy dog
+                                        </p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">font-family: 'Poppins', sans-serif</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Font Sizes -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Font Sizes</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-xs</span>
+                                        <span class="text-xs text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-sm</span>
+                                        <span class="text-sm text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-base</span>
+                                        <span class="text-base text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-lg</span>
+                                        <span class="text-lg text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-xl</span>
+                                        <span class="text-xl text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-2xl</span>
+                                        <span class="text-2xl text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-3xl</span>
+                                        <span class="text-3xl text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-4xl</span>
+                                        <span class="text-4xl text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-5xl</span>
+                                        <span class="text-5xl text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">text-6xl</span>
+                                        <span class="text-6xl text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Font Weights -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Font Weights</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">font-thin</span>
+                                        <span class="text-xl font-thin text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">font-light</span>
+                                        <span class="text-xl font-light text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">font-normal</span>
+                                        <span class="text-xl font-normal text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">font-medium</span>
+                                        <span class="text-xl font-medium text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">font-semibold</span>
+                                        <span class="text-xl font-semibold text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">font-bold</span>
+                                        <span class="text-xl font-bold text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">font-extrabold</span>
+                                        <span class="text-xl font-extrabold text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-24 text-sm text-gray-600 dark:text-gray-400">font-black</span>
+                                        <span class="text-xl font-black text-gray-800 dark:text-white">The quick brown fox jumps over the lazy dog</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Text Colors -->
+                            <div class="mb-8">
+                                <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Text Colors</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-gray-900 dark:text-white">text-gray-900 / dark:text-white</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Default text color</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-gray-700 dark:text-gray-300">text-gray-700 / dark:text-gray-300</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Secondary text color</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-gray-600 dark:text-gray-400">text-gray-600 / dark:text-gray-400</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Muted text color</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-blue-600 dark:text-blue-400">text-blue-600 / dark:text-blue-400</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Primary color</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-green-600 dark:text-green-400">text-green-600 / dark:text-green-400</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Success color</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-red-600 dark:text-red-400">text-red-600 / dark:text-red-400</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Error color</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-yellow-600 dark:text-yellow-400">text-yellow-600 / dark:text-yellow-400</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Warning color</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-purple-600 dark:text-purple-400">text-purple-600 / dark:text-purple-400</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Accent color</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                        <p class="text-gradient">Gradient Text</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">Special gradient effect</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Text Styles -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Text Styles</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Uppercase</p>
+                                            <p class="text-lg uppercase text-gray-800 dark:text-white">The quick brown fox</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Lowercase</p>
+                                            <p class="text-lg lowercase text-gray-800 dark:text-white">The Quick Brown Fox</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Capitalize</p>
+                                            <p class="text-lg capitalize text-gray-800 dark:text-white">the quick brown fox</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Italic</p>
+                                            <p class="text-lg italic text-gray-800 dark:text-white">The quick brown fox</p>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Underline</p>
+                                            <p class="text-lg underline text-gray-800 dark:text-white">The quick brown fox</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Line Through</p>
+                                            <p class="text-lg line-through text-gray-800 dark:text-white">The quick brown fox</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Truncate</p>
+                                            <p class="text-lg truncate text-gray-800 dark:text-white w-64">The quick brown fox jumps over the lazy dog</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Monospace</p>
+                                            <p class="text-lg font-mono text-gray-800 dark:text-white">The quick brown fox</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Text Alignment & Spacing -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-align-left mr-3 text-cyan-600 dark:text-cyan-400"></i>
+                                Text Alignment & Spacing
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Text Alignment</h4>
+                                    <div class="space-y-4">
+                                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded">
+                                            <p class="text-left text-gray-800 dark:text-white">Left aligned text</p>
+                                        </div>
+                                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded">
+                                            <p class="text-center text-gray-800 dark:text-white">Center aligned text</p>
+                                        </div>
+                                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded">
+                                            <p class="text-right text-gray-800 dark:text-white">Right aligned text</p>
+                                        </div>
+                                        <div class="p-3 bg-gray-50 dark:bg-gray-700 rounded">
+                                            <p class="text-justify text-gray-800 dark:text-white">Justified text that spreads evenly across the container with equal spacing between words</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Line Height & Letter Spacing</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Leading Tight (line-height: 1.25)</p>
+                                            <p class="text-gray-800 dark:text-white leading-tight">The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Leading Normal (line-height: 1.5)</p>
+                                            <p class="text-gray-800 dark:text-white leading-normal">The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Leading Relaxed (line-height: 1.75)</p>
+                                            <p class="text-gray-800 dark:text-white leading-relaxed">The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Letter Spacing Wide</p>
+                                            <p class="text-gray-800 dark:text-white tracking-wide">The quick brown fox jumps over the lazy dog</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div id="toast" class="hidden fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg z-50 copied-toast">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span>Copied to clipboard!</span>
+        </div>
+    </div>
+    
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+        
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+        
+        // Sidebar Toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        // User Dropdown
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        userDropdown.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+        
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page-content');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = item.dataset.page;
+                
+                // Update active nav item
+                navItems.forEach(nav => {
+                    nav.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                    nav.classList.add('text-gray-700', 'dark:text-gray-300');
+                });
+                item.classList.remove('text-gray-700', 'dark:text-gray-300');
+                item.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                
+                // Show corresponding page
+                pages.forEach(page => {
+                    page.classList.add('hidden');
+                });
+                const targetElement = document.getElementById(targetPage + 'Page');
+                if (targetElement) {
+                    targetElement.classList.remove('hidden');
+                }
+                
+                // Close sidebar on mobile
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        });
+        
+        // Copy to clipboard function
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show toast notification
+                const toast = document.getElementById('toast');
+                toast.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 2000);
+            });
+        }
+        
+        // Responsive handling
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('-translate-x-full');
+            }
+        });
+    </script>
+</body>
+</html>

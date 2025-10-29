@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management Dashboard - Components</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    animation: {
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'modal-in': 'modalIn 0.3s ease-out',
+                    },
+                    keyframes: {
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        modalIn: {
+                            '0%': { 
+                                opacity: '0',
+                                transform: 'scale(0.95)'
+                            },
+                            '100%': { 
+                                opacity: '1',
+                                transform: 'scale(1)'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+        }
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .dark .scrollbar-thin::-webkit-scrollbar-track {
+            background: #374151;
+        }
+        .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.active {
+            max-height: 500px;
+            transition: max-height 0.3s ease-in;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        .modal-content {
+            animation: modalIn 0.3s ease-out;
+        }
+        .table-row-hover:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        .dark .table-row-hover:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-icon.rotate {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Main Container -->
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar-transition w-64 bg-white dark:bg-gray-800 shadow-lg flex flex-col fixed lg:relative lg:translate-x-0 -translate-x-full h-full z-30">
+            <!-- Logo -->
+            <div class="p-6 border-b dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-gray-800 dark:text-white">EduManage</h1>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto scrollbar-thin p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" data-page="dashboard" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-home w-5"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="students" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-user-graduate w-5"></i>
+                            <span>Students</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="teachers" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-chalkboard-teacher w-5"></i>
+                            <span>Teachers</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="classes" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-school w-5"></i>
+                            <span>Classes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="attendance" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-calendar-check w-5"></i>
+                            <span>Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="exams" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-clipboard-list w-5"></i>
+                            <span>Exams</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="fees" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-dollar-sign w-5"></i>
+                            <span>Fees</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="buttons" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-square w-5"></i>
+                            <span>Buttons</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="colors" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-palette w-5"></i>
+                            <span>Colors & Typography</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="components" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 transition-all">
+                            <i class="fas fa-th-large w-5"></i>
+                            <span>Components</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" data-page="settings" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-all">
+                            <i class="fas fa-cog w-5"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Profile in Sidebar -->
+            <div class="p-4 border-t dark:border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <img src="https://picsum.photos/seed/admin/40/40" alt="Admin" class="w-10 h-10 rounded-full">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Admin User</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">admin@school.edu</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation -->
+            <header class="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center space-x-4">
+                        <button id="sidebarToggle" class="lg:hidden text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <!-- Search Bar -->
+                        <div class="relative hidden md:block">
+                            <input type="text" placeholder="Search components..." 
+                                class="w-64 pl-10 pr-4 py-2 rounded-lg border dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <!-- Theme Toggle -->
+                        <button id="themeToggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-moon dark:hidden"></i>
+                            <i class="fas fa-sun hidden dark:inline"></i>
+                        </button>
+                        
+                        <!-- Notifications -->
+                        <button class="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                            <i class="fas fa-bell text-xl"></i>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        
+                        <!-- User Dropdown -->
+                        <div class="relative">
+                            <button id="userDropdown" class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <img src="https://picsum.photos/seed/admin/32/32" alt="User" class="w-8 h-8 rounded-full">
+                                <i class="fas fa-chevron-down text-xs text-gray-600 dark:text-gray-300"></i>
+                            </button>
+                            
+                            <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700 z-50">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-user mr-2"></i> Profile
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-cog mr-2"></i> Settings
+                                </a>
+                                <hr class="my-1 dark:border-gray-700">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main Content Area -->
+            <main class="flex-1 overflow-y-auto scrollbar-thin bg-gray-50 dark:bg-gray-900">
+                <div class="p-6">
+                    <!-- Components Page -->
+                    <div id="componentsPage" class="page-content">
+                        <!-- Page Header -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">UI Components</h2>
+                            <p class="text-gray-600 dark:text-gray-400">Interactive components including accordions, tabs, tables, and modals</p>
+                        </div>
+                        
+                        <!-- Accordions Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-chevron-down mr-3 text-blue-600 dark:text-blue-400"></i>
+                                Accordions
+                            </h3>
+                            
+                            <!-- Basic Accordion -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Basic Accordion</h4>
+                                <div class="space-y-2">
+                                    <div class="border dark:border-gray-700 rounded-lg">
+                                        <button class="accordion-trigger w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" onclick="toggleAccordion(this)">
+                                            <span class="font-medium text-gray-800 dark:text-white">What is School Management System?</span>
+                                            <i class="fas fa-chevron-down accordion-icon text-gray-500"></i>
+                                        </button>
+                                        <div class="accordion-content">
+                                            <div class="px-4 py-3 text-gray-600 dark:text-gray-400 border-t dark:border-gray-700">
+                                                A School Management System is a comprehensive software solution designed to streamline and automate various administrative and academic operations within an educational institution. It helps manage student data, staff information, attendance, examinations, and more.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border dark:border-gray-700 rounded-lg">
+                                        <button class="accordion-trigger w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" onclick="toggleAccordion(this)">
+                                            <span class="font-medium text-gray-800 dark:text-white">Key Features</span>
+                                            <i class="fas fa-chevron-down accordion-icon text-gray-500"></i>
+                                        </button>
+                                        <div class="accordion-content">
+                                            <div class="px-4 py-3 text-gray-600 dark:text-gray-400 border-t dark:border-gray-700">
+                                                <ul class="list-disc list-inside space-y-2">
+                                                    <li>Student Information Management</li>
+                                                    <li>Teacher and Staff Management</li>
+                                                    <li>Attendance Tracking</li>
+                                                    <li>Examination and Grading System</li>
+                                                    <li>Fee Management</li>
+                                                    <li>Report Generation</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border dark:border-gray-700 rounded-lg">
+                                        <button class="accordion-trigger w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" onclick="toggleAccordion(this)">
+                                            <span class="font-medium text-gray-800 dark:text-white">Benefits for Schools</span>
+                                            <i class="fas fa-chevron-down accordion-icon text-gray-500"></i>
+                                        </button>
+                                        <div class="accordion-content">
+                                            <div class="px-4 py-3 text-gray-600 dark:text-gray-400 border-t dark:border-gray-700">
+                                                Implementing a School Management System improves efficiency, reduces paperwork, enhances communication between stakeholders, provides real-time data access, and ultimately leads to better educational outcomes through streamlined processes.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Styled Accordion -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Styled Accordion with Icons</h4>
+                                <div class="space-y-3">
+                                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                                        <button class="accordion-trigger w-full px-4 py-3 text-left flex items-center justify-between hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30 transition-colors" onclick="toggleAccordion(this)">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-graduation-cap mr-3 text-blue-600 dark:text-blue-400"></i>
+                                                <span class="font-medium text-gray-800 dark:text-white">Student Management</span>
+                                            </div>
+                                            <i class="fas fa-chevron-down accordion-icon text-blue-600 dark:text-blue-400"></i>
+                                        </button>
+                                        <div class="accordion-content">
+                                            <div class="px-4 py-3 text-gray-600 dark:text-gray-400 border-t border-blue-200 dark:border-blue-800">
+                                                Comprehensive student profile management including admissions, enrollment, academic records, and personal information. Track student progress and maintain detailed records throughout their academic journey.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                                        <button class="accordion-trigger w-full px-4 py-3 text-left flex items-center justify-between hover:from-green-100 hover:to-emerald-100 dark:hover:from-green-900/30 dark:hover:to-emerald-900/30 transition-colors" onclick="toggleAccordion(this)">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-chalkboard-teacher mr-3 text-green-600 dark:text-green-400"></i>
+                                                <span class="font-medium text-gray-800 dark:text-white">Teacher Portal</span>
+                                            </div>
+                                            <i class="fas fa-chevron-down accordion-icon text-green-600 dark:text-green-400"></i>
+                                        </button>
+                                        <div class="accordion-content">
+                                            <div class="px-4 py-3 text-gray-600 dark:text-gray-400 border-t border-green-200 dark:border-green-800">
+                                                Dedicated portal for teachers to manage classes, assign homework, grade assignments, track student attendance, and communicate with parents. Streamline teaching workflows with intuitive tools.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
+                                        <button class="accordion-trigger w-full px-4 py-3 text-left flex items-center justify-between hover:from-purple-100 hover:to-pink-100 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30 transition-colors" onclick="toggleAccordion(this)">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-chart-line mr-3 text-purple-600 dark:text-purple-400"></i>
+                                                <span class="font-medium text-gray-800 dark:text-white">Analytics & Reports</span>
+                                            </div>
+                                            <i class="fas fa-chevron-down accordion-icon text-purple-600 dark:text-purple-400"></i>
+                                        </button>
+                                        <div class="accordion-content">
+                                            <div class="px-4 py-3 text-gray-600 dark:text-gray-400 border-t border-purple-200 dark:border-purple-800">
+                                                Advanced analytics dashboard with real-time insights into student performance, attendance trends, financial reports, and operational metrics. Generate custom reports for stakeholders.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tabs Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-folder-open mr-3 text-purple-600 dark:text-purple-400"></i>
+                                Tabs
+                            </h3>
+                            
+                            <!-- Basic Tabs -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Basic Tabs</h4>
+                                <div class="border-b dark:border-gray-700">
+                                    <nav class="flex space-x-8">
+                                        <button class="tab-trigger py-2 px-1 border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 font-medium" onclick="switchTab(event, 'overview')">
+                                            Overview
+                                        </button>
+                                        <button class="tab-trigger py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 font-medium" onclick="switchTab(event, 'features')">
+                                            Features
+                                        </button>
+                                        <button class="tab-trigger py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 font-medium" onclick="switchTab(event, 'pricing')">
+                                            Pricing
+                                        </button>
+                                        <button class="tab-trigger py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 font-medium" onclick="switchTab(event, 'support')">
+                                            Support
+                                        </button>
+                                    </nav>
+                                </div>
+                                <div class="mt-4">
+                                    <div id="overview" class="tab-content active">
+                                        <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">System Overview</h5>
+                                        <p class="text-gray-600 dark:text-gray-400">
+                                            Our comprehensive School Management System provides a complete solution for educational institutions to manage their daily operations efficiently. From student admissions to alumni management, our system covers all aspects of school administration.
+                                        </p>
+                                    </div>
+                                    <div id="features" class="tab-content">
+                                        <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Key Features</h5>
+                                        <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-1">
+                                            <li>Complete student lifecycle management</li>
+                                            <li>Automated attendance tracking</li>
+                                            <li>Comprehensive examination system</li>
+                                            <li>Financial management and reporting</li>
+                                            <li>Parent and student portals</li>
+                                        </ul>
+                                    </div>
+                                    <div id="pricing" class="tab-content">
+                                        <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Pricing Plans</h5>
+                                        <p class="text-gray-600 dark:text-gray-400">
+                                            We offer flexible pricing plans to suit institutions of all sizes. Contact our sales team for a customized quote based on your specific requirements and student count.
+                                        </p>
+                                    </div>
+                                    <div id="support" class="tab-content">
+                                        <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">24/7 Support</h5>
+                                        <p class="text-gray-600 dark:text-gray-400">
+                                            Our dedicated support team is available round the clock to assist you with any issues or questions. We provide comprehensive training and documentation to ensure smooth implementation.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Pill Tabs -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Pill Style Tabs</h4>
+                                <div class="flex space-x-2 mb-4">
+                                    <button class="tab-trigger px-4 py-2 bg-blue-600 text-white rounded-lg" onclick="switchPillTab(event, 'dashboard')">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+                                    </button>
+                                    <button class="tab-trigger px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600" onclick="switchPillTab(event, 'students')">
+                                        <i class="fas fa-user-graduate mr-2"></i>Students
+                                    </button>
+                                    <button class="tab-trigger px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600" onclick="switchPillTab(event, 'teachers')">
+                                        <i class="fas fa-chalkboard-teacher mr-2"></i>Teachers
+                                    </button>
+                                    <button class="tab-trigger px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600" onclick="switchPillTab(event, 'reports')">
+                                        <i class="fas fa-chart-bar mr-2"></i>Reports
+                                    </button>
+                                </div>
+                                <div>
+                                    <div id="dashboard" class="tab-content active">
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                                                <h6 class="font-semibold text-blue-800 dark:text-blue-200">Total Students</h6>
+                                                <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">1,234</p>
+                                            </div>
+                                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                                                <h6 class="font-semibold text-green-800 dark:text-green-200">Total Teachers</h6>
+                                                <p class="text-2xl font-bold text-green-600 dark:text-green-400">89</p>
+                                            </div>
+                                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                                                <h6 class="font-semibold text-purple-800 dark:text-purple-200">Classes</h6>
+                                                <p class="text-2xl font-bold text-purple-600 dark:text-purple-400">45</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="students" class="tab-content">
+                                        <p class="text-gray-600 dark:text-gray-400">
+                                            Manage all student-related information including admissions, enrollment, academic records, attendance, and performance tracking.
+                                        </p>
+                                    </div>
+                                    <div id="teachers" class="tab-content">
+                                        <p class="text-gray-600 dark:text-gray-400">
+                                            Comprehensive teacher management system with profile management, class assignments, and performance evaluation tools.
+                                        </p>
+                                    </div>
+                                    <div id="reports" class="tab-content">
+                                        <p class="text-gray-600 dark:text-gray-400">
+                                            Generate detailed reports on student performance, attendance, financial summaries, and operational metrics.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Vertical Tabs -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Vertical Tabs</h4>
+                                <div class="flex flex-col md:flex-row gap-4">
+                                    <div class="md:w-64 space-y-2">
+                                        <button class="tab-trigger w-full text-left px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg border-l-4 border-blue-600" onclick="switchVerticalTab(event, 'profile')">
+                                            <i class="fas fa-user mr-2"></i>Profile Settings
+                                        </button>
+                                        <button class="tab-trigger w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg" onclick="switchVerticalTab(event, 'security')">
+                                            <i class="fas fa-shield-alt mr-2"></i>Security
+                                        </button>
+                                        <button class="tab-trigger w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg" onclick="switchVerticalTab(event, 'notifications')">
+                                            <i class="fas fa-bell mr-2"></i>Notifications
+                                        </button>
+                                        <button class="tab-trigger w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg" onclick="switchVerticalTab(event, 'privacy')">
+                                            <i class="fas fa-lock mr-2"></i>Privacy
+                                        </button>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div id="profile" class="tab-content active">
+                                            <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Profile Settings</h5>
+                                            <p class="text-gray-600 dark:text-gray-400">
+                                                Manage your personal information, contact details, and preferences. Update your profile picture and customize your account settings.
+                                            </p>
+                                        </div>
+                                        <div id="security" class="tab-content">
+                                            <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Security Settings</h5>
+                                            <p class="text-gray-600 dark:text-gray-400">
+                                                Configure two-factor authentication, password requirements, and session management to keep your account secure.
+                                            </p>
+                                        </div>
+                                        <div id="notifications" class="tab-content">
+                                            <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Notification Preferences</h5>
+                                            <p class="text-gray-600 dark:text-gray-400">
+                                                Choose which notifications you receive via email, SMS, or in-app. Set quiet hours and priority levels for different types of alerts.
+                                            </p>
+                                        </div>
+                                        <div id="privacy" class="tab-content">
+                                            <h5 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Privacy Settings</h5>
+                                            <p class="text-gray-600 dark:text-gray-400">
+                                                Control who can see your information and how your data is used. Manage data sharing preferences and export your data.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Tables Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700 mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-table mr-3 text-green-600 dark:text-green-400"></i>
+                                Tables
+                            </h3>
+                            
+                            <!-- Basic Table -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Basic Table</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead>
+                                            <tr class="bg-gray-50 dark:bg-gray-700">
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Role</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Join Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                            <tr class="table-row-hover">
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <img src="https://picsum.photos/seed/user1/32/32" alt="" class="w-8 h-8 rounded-full mr-3">
+                                                        <span class="text-sm font-medium text-gray-900 dark:text-gray-300">John Doe</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">john.doe@school.edu</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Administrator</td>
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full">Active</span>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Jan 15, 2023</td>
+                                            </tr>
+                                            <tr class="table-row-hover">
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <img src="https://picsum.photos/seed/user2/32/32" alt="" class="w-8 h-8 rounded-full mr-3">
+                                                        <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Jane Smith</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">jane.smith@school.edu</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Teacher</td>
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full">Active</span>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Feb 20, 2023</td>
+                                            </tr>
+                                            <tr class="table-row-hover">
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <img src="https://picsum.photos/seed/user3/32/32" alt="" class="w-8 h-8 rounded-full mr-3">
+                                                        <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Mike Johnson</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">mike.j@school.edu</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Student</td>
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 rounded-full">Pending</span>
+                                                </td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Mar 10, 2023</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Striped Table -->
+                            <div class="mb-6">
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Striped Table</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead>
+                                            <tr class="bg-gray-100 dark:bg-gray-700">
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Student ID</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Name</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Grade</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Math</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Science</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">English</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Average</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-300">#001</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">Alice Cooper</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Grade 10</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">92</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">88</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">95</td>
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full">91.7</span>
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-gray-50 dark:bg-gray-900">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-300">#002</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">Bob Martin</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Grade 10</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">78</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">85</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">82</td>
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded-full">81.7</span>
+                                                </td>
+                                            </tr>
+                                            <tr class="bg-white dark:bg-gray-800">
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-300">#003</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">Carol White</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600 dark:text-gray-400">Grade 10</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">95</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">92</td>
+                                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-300">98</td>
+                                                <td class="px-4 py-3 whitespace-nowrap">
+                                                    <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 rounded-full">95.0</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Bordered Table -->
+                            <div>
+                                <h4 class="text-lg font-medium text-gray-700 dark:text-gray-300 mb-4">Bordered Table with Actions</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full border border-gray-200 dark:border-gray-700">
+                                        <thead>
+                                            <tr class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-700">
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">Course</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">Instructor</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">Schedule</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider border-r border-gray-200 dark:border-gray-700">Students</th>
+                                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700">
+                                                    <div class="font-medium">Mathematics 101</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">Algebra & Geometry</div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700">
+                                                    <div class="flex items-center">
+                                                        <img src="https://picsum.photos/seed/teacher1/24/24" alt="" class="w-6 h-6 rounded-full mr-2">
+                                                        Dr. Sarah Wilson
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
+                                                    Mon, Wed, Fri<br>9:00 AM - 10:30 AM
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
+                                                    <div class="flex items-center">
+                                                        <div class="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                                            <div class="bg-blue-600 h-2 rounded-full" style="width: 75%"></div>
+                                                        </div>
+                                                        <span>30/40</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">
+                                                    <button class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 mr-3">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700">
+                                                    <div class="font-medium">Physics 201</div>
+                                                    <div class="text-xs text-gray-500 dark:text-gray-400">Mechanics & Thermodynamics</div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-gray-900 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700">
+                                                    <div class="flex items-center">
+                                                        <img src="https://picsum.photos/seed/teacher2/24/24" alt="" class="w-6 h-6 rounded-full mr-2">
+                                                        Prof. James Brown
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
+                                                    Tue, Thu<br>2:00 PM - 3:30 PM
+                                                </td>
+                                                <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700">
+                                                    <div class="flex items-center">
+                                                        <div class="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                                            <div class="bg-green-600 h-2 rounded-full" style="width: 90%"></div>
+                                                        </div>
+                                                        <span>27/30</span>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">
+                                                    <button class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 mr-3">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button class="text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 mr-3">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Modals Section -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border dark:border-gray-700">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 flex items-center">
+                                <i class="fas fa-window-restore mr-3 text-indigo-600 dark:text-indigo-400"></i>
+                                Modals
+                            </h3>
+                            
+                            <!-- Modal Buttons -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                                <button onclick="openModal('basicModal')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                    <i class="fas fa-info-circle mr-2"></i>Basic Modal
+                                </button>
+                                <button onclick="openModal('formModal')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                    <i class="fas fa-edit mr-2"></i>Form Modal
+                                </button>
+                                <button onclick="openModal('confirmModal')" class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>Confirm Modal
+                                </button>
+                                <button onclick="openModal('largeModal')" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                                    <i class="fas fa-expand mr-2"></i>Large Modal
+                                </button>
+                            </div>
+                            
+                            <!-- Modal Examples Description -->
+                            <div class="text-sm text-gray-600 dark:text-gray-400">
+                                <p>Click the buttons above to see different modal variations in action. Each modal demonstrates different use cases and styling options.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Basic Modal -->
+    <div id="basicModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="modal-backdrop flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-50">
+            <div class="modal-content relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-info-circle text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modal-title">
+                                Information Modal
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    This is a basic modal dialog example. Modals are used to display important information or to prompt users for input without navigating away from the current page.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button onclick="closeModal('basicModal')" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Got it
+                    </button>
+                    <button onclick="closeModal('basicModal')" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Form Modal -->
+    <div id="formModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="modal-backdrop flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-50">
+            <div class="modal-content relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                            Add New Student
+                        </h3>
+                        <button onclick="closeModal('formModal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                            <input type="text" class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                            <input type="email" class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Grade</label>
+                            <select class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
+                                <option>Grade 9</option>
+                                <option>Grade 10</option>
+                                <option>Grade 11</option>
+                                <option>Grade 12</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date of Birth</label>
+                            <input type="date" class="mt-1 block w-full border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white px-3 py-2 border">
+                        </div>
+                    </form>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button onclick="closeModal('formModal')" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Save Student
+                    </button>
+                    <button onclick="closeModal('formModal')" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="modal-backdrop flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-50">
+            <div class="modal-content relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fas fa-exclamation-triangle text-yellow-600 dark:text-yellow-400"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                                Delete Confirmation
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Are you sure you want to delete this item? This action cannot be undone and all associated data will be permanently removed.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button onclick="closeModal('confirmModal')" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Delete
+                    </button>
+                    <button onclick="closeModal('confirmModal')" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Large Modal -->
+    <div id="largeModal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="modal-backdrop flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0 bg-black bg-opacity-50">
+            <div class="modal-content relative inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl leading-6 font-medium text-gray-900 dark:text-white">
+                            Student Performance Report
+                        </h3>
+                        <button onclick="closeModal('largeModal')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Report Content -->
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                                <h4 class="font-semibold text-blue-800 dark:text-blue-200">Total Students</h4>
+                                <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">1,234</p>
+                                <p class="text-sm text-blue-600 dark:text-blue-400">+12% from last month</p>
+                            </div>
+                            <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                                <h4 class="font-semibold text-green-800 dark:text-green-200">Average Score</h4>
+                                <p class="text-2xl font-bold text-green-600 dark:text-green-400">85.4%</p>
+                                <p class="text-sm text-green-600 dark:text-green-400">+3.2% improvement</p>
+                            </div>
+                            <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                                <h4 class="font-semibold text-purple-800 dark:text-purple-200">Attendance Rate</h4>
+                                <p class="text-2xl font-bold text-purple-600 dark:text-purple-400">94.5%</p>
+                                <p class="text-sm text-purple-600 dark:text-purple-400">Above target</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-semibold text-gray-800 dark:text-white mb-3">Recent Performance</h4>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Student</th>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Math</th>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Science</th>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">English</th>
+                                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Average</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tr>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">Alice Cooper</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">92</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">88</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">95</td>
+                                            <td class="px-4 py-2 text-sm font-medium text-green-600 dark:text-green-400">91.7</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">Bob Martin</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">78</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">85</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">82</td>
+                                            <td class="px-4 py-2 text-sm font-medium text-blue-600 dark:text-blue-400">81.7</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">Carol White</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">95</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">92</td>
+                                            <td class="px-4 py-2 text-sm text-gray-900 dark:text-gray-300">98</td>
+                                            <td class="px-4 py-2 text-sm font-medium text-green-600 dark:text-green-400">95.0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button onclick="closeModal('largeModal')" class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Download Report
+                    </button>
+                    <button onclick="closeModal('largeModal')" class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+        
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+        
+        // Sidebar Toggle
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+        
+        // User Dropdown
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        
+        userDropdown.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userDropdown.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+        
+        // Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page-content');
+        
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = item.dataset.page;
+                
+                // Update active nav item
+                navItems.forEach(nav => {
+                    nav.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                    nav.classList.add('text-gray-700', 'dark:text-gray-300');
+                });
+                item.classList.remove('text-gray-700', 'dark:text-gray-300');
+                item.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400');
+                
+                // Show corresponding page
+                pages.forEach(page => {
+                    page.classList.add('hidden');
+                });
+                const targetElement = document.getElementById(targetPage + 'Page');
+                if (targetElement) {
+                    targetElement.classList.remove('hidden');
+                }
+                
+                // Close sidebar on mobile
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        });
+        
+        // Accordion Function
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.accordion-icon');
+            
+            content.classList.toggle('active');
+            icon.classList.toggle('rotate');
+        }
+        
+        // Tab Function
+        function switchTab(event, tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabTriggers = event.target.parentElement.querySelectorAll('.tab-trigger');
+            
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            tabTriggers.forEach(trigger => {
+                trigger.classList.remove('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
+                trigger.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
+            event.target.classList.add('border-blue-500', 'text-blue-600', 'dark:text-blue-400');
+        }
+        
+        // Pill Tab Function
+        function switchPillTab(event, tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabTriggers = event.target.parentElement.querySelectorAll('.tab-trigger');
+            
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            tabTriggers.forEach(trigger => {
+                trigger.classList.remove('bg-blue-600', 'text-white');
+                trigger.classList.add('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.remove('bg-gray-200', 'dark:bg-gray-700', 'text-gray-700', 'dark:text-gray-300');
+            event.target.classList.add('bg-blue-600', 'text-white');
+        }
+        
+        // Vertical Tab Function
+        function switchVerticalTab(event, tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabTriggers = event.target.parentElement.querySelectorAll('.tab-trigger');
+            
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            tabTriggers.forEach(trigger => {
+                trigger.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400', 'border-l-4', 'border-blue-600');
+                trigger.classList.add('text-gray-700', 'dark:text-gray-300');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.remove('text-gray-700', 'dark:text-gray-300');
+            event.target.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'text-blue-600', 'dark:text-blue-400', 'border-l-4', 'border-blue-600');
+        }
+        
+        // Modal Functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal on backdrop click
+        document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+            backdrop.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    const modal = this.closest('[id$="Modal"]');
+                    if (modal) {
+                        closeModal(modal.id);
+                    }
+                }
+            });
+        });
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const openModal = document.querySelector('[id$="Modal"]:not(.hidden)');
+                if (openModal) {
+                    closeModal(openModal.id);
+                }
+            }
+        });
+        
+        // Responsive handling
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('-translate-x-full');
+            }
+        });
+    </script>
+</body>
+</html>
