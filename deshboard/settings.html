@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - CanteenHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #6366f1;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg sidebar-transition transform -translate-x-full md:translate-x-0">
+        <div class="flex items-center justify-center h-16 px-4 bg-indigo-600">
+            <span class="text-white text-xl font-bold">CanteenHub</span>
+        </div>
+        <nav class="mt-6">
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-home w-5 h-5 mr-3"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-utensils w-5 h-5 mr-3"></i>
+                <span>Menu Items</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-shopping-cart w-5 h-5 mr-3"></i>
+                <span>Orders</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-users w-5 h-5 mr-3"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-file-invoice-dollar w-5 h-5 mr-3"></i>
+                <span>Billing</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-boxes w-5 h-5 mr-3"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-indigo-50 border-l-4 border-indigo-600">
+                <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between h-16 px-4">
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex-1 max-w-xl mx-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search settings..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="ml-4 relative">
+                        <button id="profile-dropdown-button" class="flex items-center text-sm rounded-full focus:outline-none">
+                            <img class="h-8 w-8 rounded-full" src="https://picsum.photos/seed/user123/40/40.jpg" alt="Profile">
+                        </button>
+                        <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Settings Content -->
+        <main class="p-4 md:p-6">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Settings</h1>
+                <p class="text-gray-600 mt-1">Manage your canteen system preferences and configurations</p>
+            </div>
+
+            <!-- Settings Tabs -->
+            <div class="bg-white rounded-lg shadow">
+                <div class="border-b">
+                    <div class="flex flex-wrap">
+                        <button class="tab-button px-4 py-3 text-sm font-medium text-indigo-600 border-b-2 border-indigo-600" data-tab="general">
+                            <i class="fas fa-building mr-2"></i> General
+                        </button>
+                        <button class="tab-button px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="users">
+                            <i class="fas fa-users mr-2"></i> Users
+                        </button>
+                        <button class="tab-button px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="payments">
+                            <i class="fas fa-credit-card mr-2"></i> Payments
+                        </button>
+                        <button class="tab-button px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="notifications">
+                            <i class="fas fa-bell mr-2"></i> Notifications
+                        </button>
+                        <button class="tab-button px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="system">
+                            <i class="fas fa-server mr-2"></i> System
+                        </button>
+                        <button class="tab-button px-4 py-3 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="security">
+                            <i class="fas fa-shield-alt mr-2"></i> Security
+                        </button>
+                    </div>
+                </div>
+
+                <!-- General Settings Tab -->
+                <div id="general" class="tab-content active p-6">
+                    <div class="max-w-3xl">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">General Settings</h3>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Canteen Name</label>
+                                <input type="text" value="CanteenHub" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                                <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">123 Main Street, City, State 12345</textarea>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                    <input type="tel" value="+1 234-567-8900" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" value="contact@canteenhub.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Business Hours</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="text-xs text-gray-500">Opening Time</label>
+                                        <input type="time" value="08:00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    <div>
+                                        <label class="text-xs text-gray-500">Closing Time</label>
+                                        <input type="time" value="22:00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="USD">USD - US Dollar</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="GBP">GBP - British Pound</option>
+                                    <option value="CAD">CAD - Canadian Dollar</option>
+                                </select>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Settings Tab -->
+                <div id="users" class="tab-content p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">User Management</h3>
+                        <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                            <i class="fas fa-plus mr-2"></i> Add User
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Login</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <img class="h-8 w-8 rounded-full" src="https://picsum.photos/seed/user1/32/32.jpg" alt="">
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-gray-900">John Doe</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">john.doe@canteenhub.com</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">Admin</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2 hours ago</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900">Delete</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <img class="h-8 w-8 rounded-full" src="https://picsum.photos/seed/user2/32/32.jpg" alt="">
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-gray-900">Jane Smith</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">jane.smith@canteenhub.com</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Manager</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1 day ago</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900">Delete</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <img class="h-8 w-8 rounded-full" src="https://picsum.photos/seed/user3/32/32.jpg" alt="">
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-gray-900">Bob Johnson</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">bob.johnson@canteenhub.com</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Staff</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">Inactive</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1 week ago</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <button class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
+                                        <button class="text-red-600 hover:text-red-900">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payments Settings Tab -->
+                <div id="payments" class="tab-content p-6">
+                    <div class="max-w-3xl">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Payment Settings</h3>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Payment Methods</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-money-bill-wave text-green-600 text-xl mr-3"></i>
+                                            <div>
+                                                <p class="font-medium">Cash</p>
+                                                <p class="text-sm text-gray-500">Accept cash payments</p>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-credit-card text-blue-600 text-xl mr-3"></i>
+                                            <div>
+                                                <p class="font-medium">Credit/Debit Cards</p>
+                                                <p class="text-sm text-gray-500">Accept card payments</p>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-mobile-alt text-purple-600 text-xl mr-3"></i>
+                                            <div>
+                                                <p class="font-medium">Mobile Payments</p>
+                                                <p class="text-sm text-gray-500">PayPal, Venmo, etc.</p>
+                                            </div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tax Rate (%)</label>
+                                <input type="number" value="10" step="0.1" min="0" max="100" class="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Service Charge (%)</label>
+                                <input type="number" value="5" step="0.1" min="0" max="100" class="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Default Tip Options</label>
+                                <div class="flex gap-2">
+                                    <input type="number" value="15" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <input type="number" value="18" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <input type="number" value="20" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Settings Tab -->
+                <div id="notifications" class="tab-content p-6">
+                    <div class="max-w-3xl">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Notification Preferences</h3>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Email Notifications</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">New Orders</p>
+                                            <p class="text-sm text-gray-500">Get notified when new orders are placed</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Low Stock Alerts</p>
+                                            <p class="text-sm text-gray-500">Alert when inventory items are low</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Daily Reports</p>
+                                            <p class="text-sm text-gray-500">Receive daily summary reports</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-md font-medium text-gray-700 mb-3">SMS Notifications</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Order Confirmations</p>
+                                            <p class="text-sm text-gray-500">Send SMS for order confirmations</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Order Ready</p>
+                                            <p class="text-sm text-gray-500">Notify when orders are ready</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Notification Email</label>
+                                <input type="email" value="notifications@canteenhub.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Settings Tab -->
+                <div id="system" class="tab-content p-6">
+                    <div class="max-w-3xl">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">System Configuration</h3>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Data Management</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Auto Backup</p>
+                                            <p class="text-sm text-gray-500">Automatically backup data daily</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Backup Time</label>
+                                        <input type="time" value="02:00" class="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Data Retention Period (days)</label>
+                                        <input type="number" value="365" min="30" max="1825" class="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-md font-medium text-gray-700 mb-3">System Preferences</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+                                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="UTC-5">UTC-5 Eastern Time</option>
+                                            <option value="UTC-6">UTC-6 Central Time</option>
+                                            <option value="UTC-7">UTC-7 Mountain Time</option>
+                                            <option value="UTC-8">UTC-8 Pacific Time</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Date Format</label>
+                                        <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                            <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                            <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                            <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center pt-4 border-t">
+                                <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                                    <i class="fas fa-trash mr-2"></i> Clear All Data
+                                </button>
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings Tab -->
+                <div id="security" class="tab-content p-6">
+                    <div class="max-w-3xl">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Security Settings</h3>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Password Policy</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Minimum Length</p>
+                                            <p class="text-sm text-gray-500">Minimum password length</p>
+                                        </div>
+                                        <input type="number" value="8" min="6" max="20" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Require Special Characters</p>
+                                            <p class="text-sm text-gray-500">Require special characters in passwords</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Password Expiry (days)</p>
+                                            <p class="text-sm text-gray-500">Days until password expires</p>
+                                        </div>
+                                        <input type="number" value="90" min="30" max="365" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Two-Factor Authentication</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Enable 2FA</p>
+                                            <p class="text-sm text-gray-500">Require two-factor authentication</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">SMS 2FA</p>
+                                            <p class="text-sm text-gray-500">Allow SMS for 2FA</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-md font-medium text-gray-700 mb-3">Session Management</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Session Timeout (minutes)</p>
+                                            <p class="text-sm text-gray-500">Minutes until session expires</p>
+                                        </div>
+                                        <input type="number" value="30" min="5" max="240" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-3 border rounded-lg">
+                                        <div>
+                                            <p class="font-medium">Remember Me</p>
+                                            <p class="text-sm text-gray-500">Allow "Remember Me" option</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Profile dropdown toggle
+        const profileDropdownButton = document.getElementById('profile-dropdown-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        profileDropdownButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!profileDropdownButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Update button styles
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                    btn.classList.add('text-gray-500');
+                });
+                button.classList.remove('text-gray-500');
+                button.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                
+                // Show corresponding tab content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

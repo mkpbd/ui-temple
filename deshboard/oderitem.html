@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen Management Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom animations and transitions */
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .carousel-item {
+            display: none;
+        }
+        .carousel-item.active {
+            display: block;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .table-row-hover:hover {
+            background-color: #f9fafb;
+        }
+        .action-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg sidebar-transition transform -translate-x-full md:translate-x-0">
+        <div class="flex items-center justify-center h-16 px-4 bg-indigo-600">
+            <span class="text-white text-xl font-bold">CanteenHub</span>
+        </div>
+        <nav class="mt-6">
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-home w-5 h-5 mr-3"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-indigo-50 border-l-4 border-indigo-600">
+                <i class="fas fa-utensils w-5 h-5 mr-3"></i>
+                <span>Menu Items</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-shopping-cart w-5 h-5 mr-3"></i>
+                <span>Orders</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-users w-5 h-5 mr-3"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-file-invoice-dollar w-5 h-5 mr-3"></i>
+                <span>Billing</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-boxes w-5 h-5 mr-3"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between h-16 px-4">
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex-1 max-w-xl mx-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search menu items..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="ml-4 relative">
+                        <button id="profile-dropdown-button" class="flex items-center text-sm rounded-full focus:outline-none">
+                            <img class="h-8 w-8 rounded-full" src="https://picsum.photos/seed/user123/40/40.jpg" alt="Profile">
+                        </button>
+                        <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Menu Items Content -->
+        <main class="p-4 md:p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Menu Items</h1>
+                <button id="add-menu-item-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center">
+                    <i class="fas fa-plus mr-2"></i> Add New Item
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-lg shadow p-4 mb-6">
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select id="category-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Categories</option>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="beverages">Beverages</option>
+                            <option value="desserts">Desserts</option>
+                        </select>
+                    </div>
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select id="status-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Status</option>
+                            <option value="available">Available</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="clear-filters" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Items Table -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="menu-items-tbody" class="bg-white divide-y divide-gray-200">
+                            <!-- Menu items will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6">
+                <div class="text-sm text-gray-700">
+                    Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">25</span> results
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Previous</button>
+                    <button class="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm">1</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">2</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">3</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Next</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Menu Item Modal -->
+    <div id="menu-item-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 id="modal-title" class="text-lg font-semibold text-gray-800">Add New Menu Item</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="menu-item-form" class="p-4 space-y-4">
+                <input type="hidden" id="item-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+                    <input type="text" id="item-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter item name" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select id="item-category" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="">Select category</option>
+                        <option value="breakfast">Breakfast</option>
+                        <option value="lunch">Lunch</option>
+                        <option value="dinner">Dinner</option>
+                        <option value="beverages">Beverages</option>
+                        <option value="desserts">Desserts</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
+                    <input type="number" id="item-price" step="0.01" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0.00" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea id="item-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter item description"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select id="item-status" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="available">Available</option>
+                        <option value="unavailable">Unavailable</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                    <input type="url" id="item-image" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter image URL">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" id="cancel-modal" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm">
+            <div class="p-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Confirm Delete</h3>
+            </div>
+            <div class="p-4">
+                <p class="text-gray-600">Are you sure you want to delete this menu item? This action cannot be undone.</p>
+            </div>
+            <div class="p-4 border-t flex justify-end space-x-3">
+                <button id="cancel-delete" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                <button id="confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample menu items data
+        let menuItems = [
+            { id: 1, name: 'Continental Breakfast', category: 'breakfast', price: 5.99, status: 'available', description: 'Fresh bread, eggs, bacon, and coffee', image: 'https://picsum.photos/seed/breakfast1/100/100.jpg' },
+            { id: 2, name: 'Grilled Chicken Sandwich', category: 'lunch', price: 8.99, status: 'available', description: 'Grilled chicken breast with lettuce and mayo', image: 'https://picsum.photos/seed/lunch1/100/100.jpg' },
+            { id: 3, name: 'Grilled Salmon', category: 'dinner', price: 14.99, status: 'available', description: 'Fresh Atlantic salmon with herbs', image: 'https://picsum.photos/seed/dinner1/100/100.jpg' },
+            { id: 4, name: 'Fresh Orange Juice', category: 'beverages', price: 3.49, status: 'available', description: 'Freshly squeezed orange juice', image: 'https://picsum.photos/seed/beverage1/100/100.jpg' },
+            { id: 5, name: 'Chocolate Cake', category: 'desserts', price: 6.99, status: 'unavailable', description: 'Rich chocolate cake with ganache', image: 'https://picsum.photos/seed/dessert1/100/100.jpg' },
+            { id: 6, name: 'Veggie Omelette', category: 'breakfast', price: 7.49, status: 'available', description: 'Three eggs with fresh vegetables', image: 'https://picsum.photos/seed/breakfast2/100/100.jpg' },
+            { id: 7, name: 'Caesar Salad', category: 'lunch', price: 7.99, status: 'available', description: 'Crisp romaine with Caesar dressing', image: 'https://picsum.photos/seed/lunch2/100/100.jpg' },
+            { id: 8, name: 'Beef Stir Fry', category: 'dinner', price: 13.99, status: 'available', description: 'Tender beef with mixed vegetables', image: 'https://picsum.photos/seed/dinner2/100/100.jpg' },
+            { id: 9, name: 'Iced Coffee', category: 'beverages', price: 4.99, status: 'available', description: 'Cold brew coffee with ice', image: 'https://picsum.photos/seed/beverage2/100/100.jpg' },
+            { id: 10, name: 'Tiramisu', category: 'desserts', price: 7.99, status: 'available', description: 'Classic Italian dessert', image: 'https://picsum.photos/seed/dessert2/100/100.jpg' }
+        ];
+
+        let currentDeleteId = null;
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Profile dropdown toggle
+        const profileDropdownButton = document.getElementById('profile-dropdown-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        profileDropdownButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!profileDropdownButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // Render menu items table
+        function renderMenuItems(items = menuItems) {
+            const tbody = document.getElementById('menu-items-tbody');
+            tbody.innerHTML = '';
+            
+            items.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'table-row-hover';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-lg object-cover" src="${item.image}" alt="${item.name}">
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${item.name}</div>
+                                <div class="text-sm text-gray-500">${item.description}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${item.category.charAt(0).toUpperCase() + item.category.slice(1)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        $${item.price.toFixed(2)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.status === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onclick="editMenuItem(${item.id})" class="text-indigo-600 hover:text-indigo-900 mr-3 action-btn">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button onclick="deleteMenuItem(${item.id})" class="text-red-600 hover:text-red-900 action-btn">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Modal functionality
+        const addMenuItemBtn = document.getElementById('add-menu-item-btn');
+        const menuItemModal = document.getElementById('menu-item-modal');
+        const closeModal = document.getElementById('close-modal');
+        const cancelModal = document.getElementById('cancel-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const menuItemForm = document.getElementById('menu-item-form');
+
+        addMenuItemBtn.addEventListener('click', () => {
+            modalTitle.textContent = 'Add New Menu Item';
+            menuItemForm.reset();
+            document.getElementById('item-id').value = '';
+            menuItemModal.classList.remove('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            menuItemModal.classList.add('hidden');
+        });
+
+        cancelModal.addEventListener('click', () => {
+            menuItemModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        menuItemModal.addEventListener('click', (event) => {
+            if (event.target === menuItemModal) {
+                menuItemModal.classList.add('hidden');
+            }
+        });
+
+        // Edit menu item
+        function editMenuItem(id) {
+            const item = menuItems.find(item => item.id === id);
+            if (item) {
+                modalTitle.textContent = 'Edit Menu Item';
+                document.getElementById('item-id').value = item.id;
+                document.getElementById('item-name').value = item.name;
+                document.getElementById('item-category').value = item.category;
+                document.getElementById('item-price').value = item.price;
+                document.getElementById('item-description').value = item.description;
+                document.getElementById('item-status').value = item.status;
+                document.getElementById('item-image').value = item.image;
+                menuItemModal.classList.remove('hidden');
+            }
+        }
+
+        // Delete menu item
+        function deleteMenuItem(id) {
+            currentDeleteId = id;
+            document.getElementById('delete-modal').classList.remove('hidden');
+        }
+
+        // Delete confirmation
+        const deleteModal = document.getElementById('delete-modal');
+        const cancelDelete = document.getElementById('cancel-delete');
+        const confirmDelete = document.getElementById('confirm-delete');
+
+        cancelDelete.addEventListener('click', () => {
+            deleteModal.classList.add('hidden');
+            currentDeleteId = null;
+        });
+
+        confirmDelete.addEventListener('click', () => {
+            if (currentDeleteId) {
+                menuItems = menuItems.filter(item => item.id !== currentDeleteId);
+                renderMenuItems();
+                deleteModal.classList.add('hidden');
+                currentDeleteId = null;
+            }
+        });
+
+        // Close delete modal when clicking outside
+        deleteModal.addEventListener('click', (event) => {
+            if (event.target === deleteModal) {
+                deleteModal.classList.add('hidden');
+                currentDeleteId = null;
+            }
+        });
+
+        // Form submission
+        menuItemForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            
+            const id = document.getElementById('item-id').value;
+            const formData = {
+                name: document.getElementById('item-name').value,
+                category: document.getElementById('item-category').value,
+                price: parseFloat(document.getElementById('item-price').value),
+                description: document.getElementById('item-description').value,
+                status: document.getElementById('item-status').value,
+                image: document.getElementById('item-image').value || `https://picsum.photos/seed/${Date.now()}/100/100.jpg`
+            };
+
+            if (id) {
+                // Edit existing item
+                const index = menuItems.findIndex(item => item.id === parseInt(id));
+                if (index !== -1) {
+                    menuItems[index] = { ...menuItems[index], ...formData };
+                }
+            } else {
+                // Add new item
+                const newItem = {
+                    id: Math.max(...menuItems.map(item => item.id)) + 1,
+                    ...formData
+                };
+                menuItems.push(newItem);
+            }
+
+            renderMenuItems();
+            menuItemModal.classList.add('hidden');
+            menuItemForm.reset();
+        });
+
+        // Filter functionality
+        const categoryFilter = document.getElementById('category-filter');
+        const statusFilter = document.getElementById('status-filter');
+        const clearFilters = document.getElementById('clear-filters');
+
+        function applyFilters() {
+            const categoryValue = categoryFilter.value;
+            const statusValue = statusFilter.value;
+            
+            let filteredItems = menuItems;
+            
+            if (categoryValue) {
+                filteredItems = filteredItems.filter(item => item.category === categoryValue);
+            }
+            
+            if (statusValue) {
+                filteredItems = filteredItems.filter(item => item.status === statusValue);
+            }
+            
+            renderMenuItems(filteredItems);
+        }
+
+        categoryFilter.addEventListener('change', applyFilters);
+        statusFilter.addEventListener('change', applyFilters);
+
+        clearFilters.addEventListener('click', () => {
+            categoryFilter.value = '';
+            statusFilter.value = '';
+            renderMenuItems();
+        });
+
+        // Initial render
+        renderMenuItems();
+    </script>
+</body>
+</html>

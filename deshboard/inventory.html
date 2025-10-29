@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management - CanteenHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .table-row-hover:hover {
+            background-color: #f9fafb;
+        }
+        .action-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .card-hover {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .low-stock {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+        }
+        .good-stock {
+            background-color: #f0fdf4;
+            border-left: 4px solid #22c55e;
+        }
+        .reorder-stock {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg sidebar-transition transform -translate-x-full md:translate-x-0">
+        <div class="flex items-center justify-center h-16 px-4 bg-indigo-600">
+            <span class="text-white text-xl font-bold">CanteenHub</span>
+        </div>
+        <nav class="mt-6">
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-home w-5 h-5 mr-3"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-utensils w-5 h-5 mr-3"></i>
+                <span>Menu Items</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-shopping-cart w-5 h-5 mr-3"></i>
+                <span>Orders</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-users w-5 h-5 mr-3"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-file-invoice-dollar w-5 h-5 mr-3"></i>
+                <span>Billing</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-indigo-50 border-l-4 border-indigo-600">
+                <i class="fas fa-boxes w-5 h-5 mr-3"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between h-16 px-4">
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex-1 max-w-xl mx-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search inventory..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="ml-4 relative">
+                        <button id="profile-dropdown-button" class="flex items-center text-sm rounded-full focus:outline-none">
+                            <img class="h-8 w-8 rounded-full" src="https://picsum.photos/seed/user123/40/40.jpg" alt="Profile">
+                        </button>
+                        <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Inventory Content -->
+        <main class="p-4 md:p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Inventory Management</h1>
+                <button id="add-item-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center">
+                    <i class="fas fa-plus mr-2"></i> Add Item
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Total Items</p>
+                            <p class="text-2xl font-semibold text-gray-800">156</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <i class="fas fa-boxes text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">In stock</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Low Stock</p>
+                            <p class="text-2xl font-semibold text-gray-800">12</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-red-100 text-red-600">
+                            <i class="fas fa-exclamation-triangle text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-red-600 mt-2">Need reorder</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Categories</p>
+                            <p class="text-2xl font-semibold text-gray-800">8</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                            <i class="fas fa-tags text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">Product types</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Total Value</p>
+                            <p class="text-2xl font-semibold text-gray-800">$8,450</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <i class="fas fa-dollar-sign text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">Inventory worth</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-lg shadow p-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select id="category-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Categories</option>
+                            <option value="ingredients">Ingredients</option>
+                            <option value="beverages">Beverages</option>
+                            <option value="packaging">Packaging</option>
+                            <option value="cleaning">Cleaning Supplies</option>
+                            <option value="equipment">Equipment</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Stock Status</label>
+                        <select id="status-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Status</option>
+                            <option value="in-stock">In Stock</option>
+                            <option value="low-stock">Low Stock</option>
+                            <option value="out-of-stock">Out of Stock</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                        <select id="supplier-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Suppliers</option>
+                            <option value="supplier1">Fresh Foods Inc.</option>
+                            <option value="supplier2">Beverage Co.</option>
+                            <option value="supplier3">Packaging Plus</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="clear-filters" class="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inventory Table -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reorder Level</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supplier</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-tbody" class="bg-white divide-y divide-gray-200">
+                            <!-- Inventory items will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6">
+                <div class="text-sm text-gray-700">
+                    Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">156</span> results
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Previous</button>
+                    <button class="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm">1</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">2</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">3</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Next</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Inventory Item Modal -->
+    <div id="inventory-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 id="modal-title" class="text-lg font-semibold text-gray-800">Add New Item</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="inventory-form" class="p-4 space-y-4">
+                <input type="hidden" id="item-id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+                    <input type="text" id="item-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter item name" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select id="item-category" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="">Select category</option>
+                        <option value="ingredients">Ingredients</option>
+                        <option value="beverages">Beverages</option>
+                        <option value="packaging">Packaging</option>
+                        <option value="cleaning">Cleaning Supplies</option>
+                        <option value="equipment">Equipment</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                        <input type="number" id="item-quantity" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Reorder Level</label>
+                        <input type="number" id="item-reorder" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Unit Price ($)</label>
+                    <input type="number" id="item-price" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0.00" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                    <select id="item-supplier" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="">Select supplier</option>
+                        <option value="supplier1">Fresh Foods Inc.</option>
+                        <option value="supplier2">Beverage Co.</option>
+                        <option value="supplier3">Packaging Plus</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea id="item-description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter item description"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" id="cancel-modal" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Item Details Modal -->
+    <div id="item-details-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-800">Item Details</h3>
+                <button id="close-details-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="item-details-content" class="p-4">
+                <!-- Item details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock Adjustment Modal -->
+    <div id="stock-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm">
+            <div class="p-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Adjust Stock</h3>
+            </div>
+            <div class="p-4">
+                <form id="stock-form">
+                    <input type="hidden" id="stock-item-id">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Adjustment Type</label>
+                        <select id="adjustment-type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="add">Add Stock</option>
+                            <option value="remove">Remove Stock</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                        <input type="number" id="adjustment-quantity" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter quantity">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Reason</label>
+                        <textarea id="adjustment-reason" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter reason for adjustment"></textarea>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" id="cancel-stock" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Adjust Stock</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample inventory data
+        let inventoryItems = [
+            { id: 1, name: 'Chicken Breast', category: 'ingredients', quantity: 45, reorderLevel: 20, unitPrice: 5.99, supplier: 'supplier1', description: 'Fresh chicken breast fillets', status: 'in-stock' },
+            { id: 2, name: 'Orange Juice', category: 'beverages', quantity: 8, reorderLevel: 15, unitPrice: 2.49, supplier: 'supplier2', description: '100% pure orange juice', status: 'low-stock' },
+            { id: 3, name: 'Takeaway Boxes', category: 'packaging', quantity: 150, reorderLevel: 50, unitPrice: 0.25, supplier: 'supplier3', description: 'Biodegradable takeaway containers', status: 'in-stock' },
+            { id: 4, name: 'Dish Soap', category: 'cleaning', quantity: 5, reorderLevel: 10, unitPrice: 3.99, supplier: 'supplier1', description: 'Industrial dish soap', status: 'low-stock' },
+            { id: 5, name: 'Coffee Beans', category: 'ingredients', quantity: 0, reorderLevel: 5, unitPrice: 12.99, supplier: 'supplier2', description: 'Premium arabica coffee beans', status: 'out-of-stock' },
+            { id: 6, name: 'Plastic Cups', category: 'packaging', quantity: 200, reorderLevel: 100, unitPrice: 0.15, supplier: 'supplier3', description: '16oz plastic cups', status: 'in-stock' },
+            { id: 7, name: 'Tomatoes', category: 'ingredients', quantity: 30, reorderLevel: 25, unitPrice: 1.99, supplier: 'supplier1', description: 'Fresh Roma tomatoes', status: 'in-stock' },
+            { id: 8, name: 'Soda Cans', category: 'beverages', quantity: 12, reorderLevel: 20, unitPrice: 0.99, supplier: 'supplier2', description: 'Assorted soda cans', status: 'low-stock' },
+            { id: 9, name: 'Napkins', category: 'packaging', quantity: 500, reorderLevel: 200, unitPrice: 0.05, supplier: 'supplier3', description: 'Paper napkins', status: 'in-stock' },
+            { id: 10, name: 'Hand Sanitizer', category: 'cleaning', quantity: 3, reorderLevel: 5, unitPrice: 4.99, supplier: 'supplier1', description: 'Antibacterial hand sanitizer', status: 'low-stock' }
+        ];
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Profile dropdown toggle
+        const profileDropdownButton = document.getElementById('profile-dropdown-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        profileDropdownButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!profileDropdownButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // Render inventory table
+        function renderInventory(items = inventoryItems) {
+            const tbody = document.getElementById('inventory-tbody');
+            tbody.innerHTML = '';
+            
+            items.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'table-row-hover';
+                
+                // Add stock status class
+                if (item.quantity === 0) {
+                    row.classList.add('low-stock');
+                } else if (item.quantity <= item.reorderLevel) {
+                    row.classList.add('reorder-stock');
+                } else {
+                    row.classList.add('good-stock');
+                }
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">${item.name}</div>
+                            <div class="text-sm text-gray-500">${item.description}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            ${item.category.charAt(0).toUpperCase() + item.category.slice(1).replace('-', ' ')}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <div class="flex items-center">
+                            <span class="${item.quantity <= item.reorderLevel ? 'text-red-600 font-semibold' : 'text-gray-900'}">${item.quantity}</span>
+                            ${item.quantity <= item.reorderLevel ? '<i class="fas fa-exclamation-triangle text-red-500 ml-2"></i>' : ''}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${item.reorderLevel}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$${item.unitPrice.toFixed(2)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${getSupplierName(item.supplier)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(item.status)}">
+                            ${item.status.charAt(0).toUpperCase() + item.status.slice(1).replace('-', ' ')}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button onclick="viewItem(${item.id})" class="text-indigo-600 hover:text-indigo-900 action-btn" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="editItem(${item.id})" class="text-blue-600 hover:text-blue-900 action-btn" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="adjustStock(${item.id})" class="text-yellow-600 hover:text-yellow-900 action-btn" title="Adjust Stock">
+                                <i class="fas fa-plus-minus"></i>
+                            </button>
+                            <button onclick="deleteItem(${item.id})" class="text-red-600 hover:text-red-900 action-btn" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getSupplierName(supplierId) {
+            const suppliers = {
+                'supplier1': 'Fresh Foods Inc.',
+                'supplier2': 'Beverage Co.',
+                'supplier3': 'Packaging Plus'
+            };
+            return suppliers[supplierId] || 'Unknown';
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                'in-stock': 'bg-green-100 text-green-800',
+                'low-stock': 'bg-yellow-100 text-yellow-800',
+                'out-of-stock': 'bg-red-100 text-red-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        // Modal functionality
+        const addItemBtn = document.getElementById('add-item-btn');
+        const inventoryModal = document.getElementById('inventory-modal');
+        const closeModal = document.getElementById('close-modal');
+        const cancelModal = document.getElementById('cancel-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const inventoryForm = document.getElementById('inventory-form');
+
+        addItemBtn.addEventListener('click', () => {
+            modalTitle.textContent = 'Add New Item';
+            inventoryForm.reset();
+            document.getElementById('item-id').value = '';
+            inventoryModal.classList.remove('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            inventoryModal.classList.add('hidden');
+        });
+
+        cancelModal.addEventListener('click', () => {
+            inventoryModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        inventoryModal.addEventListener('click', (event) => {
+            if (event.target === inventoryModal) {
+                inventoryModal.classList.add('hidden');
+            }
+        });
+
+        // View item details
+        function viewItem(id) {
+            const item = inventoryItems.find(i => i.id === id);
+            if (item) {
+                const content = document.getElementById('item-details-content');
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-800">${item.name}</h4>
+                            <p class="text-sm text-gray-500">Item ID: ${item.id}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Category</p>
+                                <p class="text-gray-900">${item.category.charAt(0).toUpperCase() + item.category.slice(1).replace('-', ' ')}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Supplier</p>
+                                <p class="text-gray-900">${getSupplierName(item.supplier)}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Current Quantity</p>
+                                <p class="text-lg font-semibold ${item.quantity <= item.reorderLevel ? 'text-red-600' : 'text-gray-900'}">${item.quantity}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Reorder Level</p>
+                                <p class="text-lg font-semibold text-gray-900">${item.reorderLevel}</p>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Unit Price</p>
+                            <p class="text-lg font-semibold text-gray-900">$${item.unitPrice.toFixed(2)}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Total Value</p>
+                            <p class="text-lg font-semibold text-gray-900">$${(item.quantity * item.unitPrice).toFixed(2)}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Description</p>
+                            <p class="text-gray-900">${item.description}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Status</p>
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(item.status)}">
+                                ${item.status.charAt(0).toUpperCase() + item.status.slice(1).replace('-', ' ')}
+                            </span>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('item-details-modal').classList.remove('hidden');
+            }
+        }
+
+        // Edit item
+        function editItem(id) {
+            const item = inventoryItems.find(i => i.id === id);
+            if (item) {
+                modalTitle.textContent = 'Edit Item';
+                document.getElementById('item-id').value = item.id;
+                document.getElementById('item-name').value = item.name;
+                document.getElementById('item-category').value = item.category;
+                document.getElementById('item-quantity').value = item.quantity;
+                document.getElementById('item-reorder').value = item.reorderLevel;
+                document.getElementById('item-price').value = item.unitPrice;
+                document.getElementById('item-supplier').value = item.supplier;
+                document.getElementById('item-description').value = item.description;
+                inventoryModal.classList.remove('hidden');
+            }
+        }
+
+        // Adjust stock
+        function adjustStock(id) {
+            const item = inventoryItems.find(i => i.id === id);
+            if (item) {
+                document.getElementById('stock-item-id').value = id;
+                document.getElementById('adjustment-quantity').value = '';
+                document.getElementById('adjustment-reason').value = '';
+                document.getElementById('stock-modal').classList.remove('hidden');
+            }
+        }
+
+        // Delete item
+        function deleteItem(id) {
+            if (confirm('Are you sure you want to delete this inventory item?')) {
+                inventoryItems = inventoryItems.filter(item => item.id !== id);
+                renderInventory();
+            }
+        }
+
+        // Close item details modal
+        document.getElementById('close-details-modal').addEventListener('click', () => {
+            document.getElementById('item-details-modal').classList.add('hidden');
+        });
+
+        // Close details modal when clicking outside
+        document.getElementById('item-details-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'item-details-modal') {
+                document.getElementById('item-details-modal').classList.add('hidden');
+            }
+        });
+
+        // Stock form submission
+        document.getElementById('stock-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const itemId = parseInt(document.getElementById('stock-item-id').value);
+            const adjustmentType = document.getElementById('adjustment-type').value;
+            const quantity = parseInt(document.getElementById('adjustment-quantity').value);
+            
+            const itemIndex = inventoryItems.findIndex(i => i.id === itemId);
+            if (itemIndex !== -1) {
+                if (adjustmentType === 'add') {
+                    inventoryItems[itemIndex].quantity += quantity;
+                } else {
+                    inventoryItems[itemIndex].quantity = Math.max(0, inventoryItems[itemIndex].quantity - quantity);
+                }
+                
+                // Update status based on new quantity
+                const item = inventoryItems[itemIndex];
+                if (item.quantity === 0) {
+                    item.status = 'out-of-stock';
+                } else if (item.quantity <= item.reorderLevel) {
+                    item.status = 'low-stock';
+                } else {
+                    item.status = 'in-stock';
+                }
+                
+                renderInventory();
+                document.getElementById('stock-modal').classList.add('hidden');
+            }
+        });
+
+        // Cancel stock adjustment
+        document.getElementById('cancel-stock').addEventListener('click', () => {
+            document.getElementById('stock-modal').classList.add('hidden');
+        });
+
+        // Close stock modal when clicking outside
+        document.getElementById('stock-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'stock-modal') {
+                document.getElementById('stock-modal').classList.add('hidden');
+            }
+        });
+
+        // Inventory form submission
+        inventoryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const itemId = document.getElementById('item-id').value;
+            const formData = {
+                name: document.getElementById('item-name').value,
+                category: document.getElementById('item-category').value,
+                quantity: parseInt(document.getElementById('item-quantity').value),
+                reorderLevel: parseInt(document.getElementById('item-reorder').value),
+                unitPrice: parseFloat(document.getElementById('item-price').value),
+                supplier: document.getElementById('item-supplier').value,
+                description: document.getElementById('item-description').value
+            };
+            
+            // Determine status based on quantity and reorder level
+            if (formData.quantity === 0) {
+                formData.status = 'out-of-stock';
+            } else if (formData.quantity <= formData.reorderLevel) {
+                formData.status = 'low-stock';
+            } else {
+                formData.status = 'in-stock';
+            }
+            
+            if (itemId) {
+                // Edit existing item
+                const index = inventoryItems.findIndex(item => item.id === parseInt(itemId));
+                if (index !== -1) {
+                    inventoryItems[index] = { ...inventoryItems[index], ...formData };
+                }
+            } else {
+                // Add new item
+                const newItem = {
+                    id: Math.max(...inventoryItems.map(item => item.id)) + 1,
+                    ...formData
+                };
+                inventoryItems.push(newItem);
+            }
+            
+            renderInventory();
+            inventoryModal.classList.add('hidden');
+            inventoryForm.reset();
+        });
+
+        // Filter functionality
+        const categoryFilter = document.getElementById('category-filter');
+        const statusFilter = document.getElementById('status-filter');
+        const supplierFilter = document.getElementById('supplier-filter');
+        const clearFilters = document.getElementById('clear-filters');
+
+        function applyFilters() {
+            let filteredItems = inventoryItems;
+            
+            if (categoryFilter.value) {
+                filteredItems = filteredItems.filter(item => item.category === categoryFilter.value);
+            }
+            
+            if (statusFilter.value) {
+                filteredItems = filteredItems.filter(item => item.status === statusFilter.value);
+            }
+            
+            if (supplierFilter.value) {
+                filteredItems = filteredItems.filter(item => item.supplier === supplierFilter.value);
+            }
+            
+            renderInventory(filteredItems);
+        }
+
+        categoryFilter.addEventListener('change', applyFilters);
+        statusFilter.addEventListener('change', applyFilters);
+        supplierFilter.addEventListener('change', applyFilters);
+
+        clearFilters.addEventListener('click', () => {
+            categoryFilter.value = '';
+            statusFilter.value = '';
+            supplierFilter.value = '';
+            renderInventory();
+        });
+
+        // Initial render
+        renderInventory();
+    </script>
+</body>
+</html>

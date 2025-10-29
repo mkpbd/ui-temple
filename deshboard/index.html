@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen Management Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom animations and transitions */
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .card-hover {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .carousel-item {
+            display: none;
+        }
+        .carousel-item.active {
+            display: block;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg sidebar-transition transform -translate-x-full md:translate-x-0">
+        <div class="flex items-center justify-center h-16 px-4 bg-indigo-600">
+            <span class="text-white text-xl font-bold">CanteenHub</span>
+        </div>
+        <nav class="mt-6">
+            <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-indigo-50 border-l-4 border-indigo-600">
+                <i class="fas fa-home w-5 h-5 mr-3"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-utensils w-5 h-5 mr-3"></i>
+                <span>Menu Items</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-shopping-cart w-5 h-5 mr-3"></i>
+                <span>Orders</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-users w-5 h-5 mr-3"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-file-invoice-dollar w-5 h-5 mr-3"></i>
+                <span>Billing</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-boxes w-5 h-5 mr-3"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between h-16 px-4">
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex-1 max-w-xl mx-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="ml-4 relative">
+                        <button id="profile-dropdown-button" class="flex items-center text-sm rounded-full focus:outline-none">
+                            <img class="h-8 w-8 rounded-full" src="https://picsum.photos/seed/user123/40/40.jpg" alt="Profile">
+                        </button>
+                        <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="p-4 md:p-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Dashboard Overview</h1>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
+                            <i class="fas fa-shopping-cart text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h2 class="text-sm font-medium text-gray-500">Total Orders</h2>
+                            <p class="text-2xl font-semibold text-gray-800">1,248</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-green-500 text-sm font-medium">
+                            <i class="fas fa-arrow-up"></i> 12.5%
+                        </span>
+                        <span class="text-gray-500 text-sm">from last week</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <i class="fas fa-dollar-sign text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h2 class="text-sm font-medium text-gray-500">Revenue</h2>
+                            <p class="text-2xl font-semibold text-gray-800">$24,580</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-green-500 text-sm font-medium">
+                            <i class="fas fa-arrow-up"></i> 8.2%
+                        </span>
+                        <span class="text-gray-500 text-sm">from last month</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                            <i class="fas fa-star text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h2 class="text-sm font-medium text-gray-500">Popular Items</h2>
+                            <p class="text-2xl font-semibold text-gray-800">8</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-green-500 text-sm font-medium">
+                            <i class="fas fa-arrow-up"></i> 3 new
+                        </span>
+                        <span class="text-gray-500 text-sm">this week</span>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <i class="fas fa-users text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h2 class="text-sm font-medium text-gray-500">Active Customers</h2>
+                            <p class="text-2xl font-semibold text-gray-800">428</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-green-500 text-sm font-medium">
+                            <i class="fas fa-arrow-up"></i> 5.7%
+                        </span>
+                        <span class="text-gray-500 text-sm">from yesterday</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Special Offers Carousel -->
+            <div class="bg-white rounded-lg shadow mb-8">
+                <div class="p-4 border-b">
+                    <h2 class="text-lg font-semibold text-gray-800">Special Offers</h2>
+                </div>
+                <div class="relative">
+                    <div id="carousel" class="overflow-hidden">
+                        <div class="carousel-item active">
+                            <div class="flex items-center p-6">
+                                <img src="https://picsum.photos/seed/offer1/300/200.jpg" alt="Special Offer" class="w-1/3 rounded-lg">
+                                <div class="ml-6">
+                                    <h3 class="text-xl font-bold text-gray-800">Weekend Special</h3>
+                                    <p class="text-gray-600 mt-2">Get 20% off on all combo meals this weekend. Limited time offer!</p>
+                                    <button class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Order Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="flex items-center p-6">
+                                <img src="https://picsum.photos/seed/offer2/300/200.jpg" alt="Special Offer" class="w-1/3 rounded-lg">
+                                <div class="ml-6">
+                                    <h3 class="text-xl font-bold text-gray-800">New Menu Launch</h3>
+                                    <p class="text-gray-600 mt-2">Try our new Mediterranean dishes. Healthy and delicious options available.</p>
+                                    <button class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">View Menu</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="flex items-center p-6">
+                                <img src="https://picsum.photos/seed/offer3/300/200.jpg" alt="Special Offer" class="w-1/3 rounded-lg">
+                                <div class="ml-6">
+                                    <h3 class="text-xl font-bold text-gray-800">Loyalty Program</h3>
+                                    <p class="text-gray-600 mt-2">Join our loyalty program and earn points with every purchase. Redeem for exciting rewards!</p>
+                                    <button class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Join Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="prev-btn" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2">
+                        <i class="fas fa-chevron-left text-gray-700"></i>
+                    </button>
+                    <button id="next-btn" class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 rounded-full p-2">
+                        <i class="fas fa-chevron-right text-gray-700"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reports Tabs and Accordion -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Tabbed Reports -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-4 border-b">
+                        <h2 class="text-lg font-semibold text-gray-800">Reports</h2>
+                    </div>
+                    <div class="border-b">
+                        <div class="flex">
+                            <button class="tab-button px-4 py-2 text-sm font-medium text-indigo-600 border-b-2 border-indigo-600" data-tab="daily">Daily</button>
+                            <button class="tab-button px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="weekly">Weekly</button>
+                            <button class="tab-button px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="monthly">Monthly</button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <div id="daily" class="tab-content active">
+                            <h3 class="font-medium text-gray-800 mb-3">Daily Sales Report</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Breakfast</span>
+                                        <span class="text-sm text-gray-600">$2,450</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Lunch</span>
+                                        <span class="text-sm text-gray-600">$4,120</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Dinner</span>
+                                        <span class="text-sm text-gray-600">$3,680</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-indigo-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="weekly" class="tab-content">
+                            <h3 class="font-medium text-gray-800 mb-3">Weekly Sales Report</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Mon-Fri</span>
+                                        <span class="text-sm text-gray-600">$18,450</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-600 h-2 rounded-full" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Weekend</span>
+                                        <span class="text-sm text-gray-600">$12,320</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-600 h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="monthly" class="tab-content">
+                            <h3 class="font-medium text-gray-800 mb-3">Monthly Sales Report</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Week 1-2</span>
+                                        <span class="text-sm text-gray-600">$24,580</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 70%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm text-gray-600">Week 3-4</span>
+                                        <span class="text-sm text-gray-600">$28,960</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ Accordion -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-4 border-b">
+                        <h2 class="text-lg font-semibold text-gray-800">Daily Meal Details</h2>
+                    </div>
+                    <div class="divide-y">
+                        <div class="accordion-item">
+                            <button class="accordion-header w-full px-4 py-3 text-left flex justify-between items-center">
+                                <span class="font-medium text-gray-800">Breakfast Menu</span>
+                                <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                            </button>
+                            <div class="accordion-content hidden px-4 pb-3">
+                                <ul class="space-y-2 text-gray-600">
+                                    <li>• Continental Breakfast - $5.99</li>
+                                    <li>• Pancakes with Maple Syrup - $6.99</li>
+                                    <li>• Veggie Omelette - $7.49</li>
+                                    <li>• Fresh Fruit Bowl - $4.99</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header w-full px-4 py-3 text-left flex justify-between items-center">
+                                <span class="font-medium text-gray-800">Lunch Menu</span>
+                                <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                            </button>
+                            <div class="accordion-content hidden px-4 pb-3">
+                                <ul class="space-y-2 text-gray-600">
+                                    <li>• Grilled Chicken Sandwich - $8.99</li>
+                                    <li>• Caesar Salad - $7.99</li>
+                                    <li>• Veggie Burger - $8.49</li>
+                                    <li>• Pasta Primavera - $9.99</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header w-full px-4 py-3 text-left flex justify-between items-center">
+                                <span class="font-medium text-gray-800">Dinner Menu</span>
+                                <i class="fas fa-chevron-down text-gray-500 transition-transform"></i>
+                            </button>
+                            <div class="accordion-content hidden px-4 pb-3">
+                                <ul class="space-y-2 text-gray-600">
+                                    <li>• Grilled Salmon - $14.99</li>
+                                    <li>• Beef Stir Fry - $13.99</li>
+                                    <li>• Mushroom Risotto - $12.99</li>
+                                    <li>• Vegetable Curry - $11.99</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap gap-4 mb-8">
+                <button id="add-menu-item-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center">
+                    <i class="fas fa-plus mr-2"></i> Add Menu Item
+                </button>
+                <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition flex items-center">
+                    <i class="fas fa-file-export mr-2"></i> Export Data
+                </button>
+                <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center">
+                    <i class="fas fa-trash-alt mr-2"></i> Delete Selected
+                </button>
+            </div>
+
+            <!-- Customer Feedback Form -->
+            <div class="bg-white rounded-lg shadow p-6">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">Customer Feedback</h2>
+                <form id="feedback-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                        <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter customer name">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter email address">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                        <div class="flex space-x-1">
+                            <i class="fas fa-star text-yellow-400 text-xl cursor-pointer"></i>
+                            <i class="fas fa-star text-yellow-400 text-xl cursor-pointer"></i>
+                            <i class="fas fa-star text-yellow-400 text-xl cursor-pointer"></i>
+                            <i class="fas fa-star text-yellow-400 text-xl cursor-pointer"></i>
+                            <i class="far fa-star text-gray-300 text-xl cursor-pointer"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Feedback</label>
+                        <textarea rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter your feedback"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Submit Feedback</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Menu Item Modal -->
+    <div id="add-menu-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-800">Add New Menu Item</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="p-4 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter item name">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                    <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option>Breakfast</option>
+                        <option>Lunch</option>
+                        <option>Dinner</option>
+                        <option>Beverages</option>
+                        <option>Desserts</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
+                    <input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0.00">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter item description"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Image</label>
+                    <input type="file" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" id="cancel-modal" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Add Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Profile dropdown toggle
+        const profileDropdownButton = document.getElementById('profile-dropdown-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        profileDropdownButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!profileDropdownButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // Carousel functionality
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            carouselItems.forEach(item => item.classList.remove('active'));
+            carouselItems[index].classList.add('active');
+        }
+
+        prevBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + carouselItems.length) % carouselItems.length;
+            showSlide(currentSlide);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % carouselItems.length;
+            showSlide(currentSlide);
+        });
+
+        // Auto-rotate carousel
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % carouselItems.length;
+            showSlide(currentSlide);
+        }, 5000);
+
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                // Update button styles
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                    btn.classList.add('text-gray-500');
+                });
+                button.classList.remove('text-gray-500');
+                button.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                
+                // Show corresponding tab content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Accordion functionality
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const icon = header.querySelector('i');
+                
+                // Toggle content visibility
+                content.classList.toggle('hidden');
+                
+                // Rotate icon
+                if (content.classList.contains('hidden')) {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                } else {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                }
+            });
+        });
+
+        // Modal functionality
+        const addMenuItemBtn = document.getElementById('add-menu-item-btn');
+        const addMenuModal = document.getElementById('add-menu-modal');
+        const closeModal = document.getElementById('close-modal');
+        const cancelModal = document.getElementById('cancel-modal');
+
+        addMenuItemBtn.addEventListener('click', () => {
+            addMenuModal.classList.remove('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            addMenuModal.classList.add('hidden');
+        });
+
+        cancelModal.addEventListener('click', () => {
+            addMenuModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        addMenuModal.addEventListener('click', (event) => {
+            if (event.target === addMenuModal) {
+                addMenuModal.classList.add('hidden');
+            }
+        });
+
+        // Form submission
+        const feedbackForm = document.getElementById('feedback-form');
+        
+        feedbackForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            // In a real application, you would handle form submission here
+            alert('Feedback submitted successfully!');
+            feedbackForm.reset();
+        });
+
+        // Star rating functionality
+        const stars = document.querySelectorAll('.fa-star');
+        let currentRating = 4;
+        
+        stars.forEach((star, index) => {
+            star.addEventListener('click', () => {
+                currentRating = index + 1;
+                updateStars();
+            });
+            
+            star.addEventListener('mouseover', () => {
+                highlightStars(index + 1);
+            });
+        });
+        
+        document.querySelector('.flex.space-x-1').addEventListener('mouseleave', () => {
+            updateStars();
+        });
+        
+        function updateStars() {
+            stars.forEach((star, index) => {
+                if (index < currentRating) {
+                    star.classList.remove('far', 'text-gray-300');
+                    star.classList.add('fas', 'text-yellow-400');
+                } else {
+                    star.classList.remove('fas', 'text-yellow-400');
+                    star.classList.add('far', 'text-gray-300');
+                }
+            });
+        }
+        
+        function highlightStars(rating) {
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.remove('far', 'text-gray-300');
+                    star.classList.add('fas', 'text-yellow-400');
+                } else {
+                    star.classList.remove('fas', 'text-yellow-400');
+                    star.classList.add('far', 'text-gray-300');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

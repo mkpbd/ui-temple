@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Management - CanteenHub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        .table-row-hover:hover {
+            background-color: #f9fafb;
+        }
+        .action-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .action-btn:hover {
+            transform: scale(1.05);
+        }
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .card-hover {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .payment-method {
+            transition: all 0.2s ease-in-out;
+        }
+        .payment-method:hover {
+            border-color: #6366f1;
+            background-color: #f0f9ff;
+        }
+        .payment-method.selected {
+            border-color: #6366f1;
+            background-color: #e0e7ff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg sidebar-transition transform -translate-x-full md:translate-x-0">
+        <div class="flex items-center justify-center h-16 px-4 bg-indigo-600">
+            <span class="text-white text-xl font-bold">CanteenHub</span>
+        </div>
+        <nav class="mt-6">
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-home w-5 h-5 mr-3"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-utensils w-5 h-5 mr-3"></i>
+                <span>Menu Items</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-shopping-cart w-5 h-5 mr-3"></i>
+                <span>Orders</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-users w-5 h-5 mr-3"></i>
+                <span>Customers</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-700 bg-indigo-50 border-l-4 border-indigo-600">
+                <i class="fas fa-file-invoice-dollar w-5 h-5 mr-3"></i>
+                <span>Billing</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-boxes w-5 h-5 mr-3"></i>
+                <span>Inventory</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-chart-bar w-5 h-5 mr-3"></i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-cog w-5 h-5 mr-3"></i>
+                <span>Settings</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="md:ml-64">
+        <!-- Top Navigation -->
+        <header class="bg-white shadow-sm">
+            <div class="flex items-center justify-between h-16 px-4">
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+                <div class="flex-1 max-w-xl mx-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Search invoices..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button class="p-2 text-gray-600 hover:text-gray-900 relative">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="ml-4 relative">
+                        <button id="profile-dropdown-button" class="flex items-center text-sm rounded-full focus:outline-none">
+                            <img class="h-8 w-8 rounded-full" src="https://picsum.photos/seed/user123/40/40.jpg" alt="Profile">
+                        </button>
+                        <div id="profile-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div class="py-1">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Billing Content -->
+        <main class="p-4 md:p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">Billing Management</h1>
+                <button id="checkout-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center">
+                    <i class="fas fa-cash-register mr-2"></i> New Checkout
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Today's Revenue</p>
+                            <p class="text-2xl font-semibold text-gray-800">$2,450</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-green-100 text-green-600">
+                            <i class="fas fa-dollar-sign text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-green-600 mt-2">
+                        <i class="fas fa-arrow-up"></i> 12.5% from yesterday
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Pending Payments</p>
+                            <p class="text-2xl font-semibold text-gray-800">$580</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                            <i class="fas fa-clock text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">8 invoices pending</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Transactions</p>
+                            <p class="text-2xl font-semibold text-gray-800">124</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                            <i class="fas fa-exchange-alt text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">This month</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 card-hover">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Refunds</p>
+                            <p class="text-2xl font-semibold text-gray-800">$120</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-red-100 text-red-600">
+                            <i class="fas fa-undo text-xl"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">3 refunds processed</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white rounded-lg shadow p-4 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select id="status-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Status</option>
+                            <option value="paid">Paid</option>
+                            <option value="pending">Pending</option>
+                            <option value="overdue">Overdue</option>
+                            <option value="refunded">Refunded</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                        <select id="date-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Payment Method</label>
+                        <select id="payment-filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="">All Methods</option>
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                            <option value="mobile">Mobile Payment</option>
+                            <option value="online">Online</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="clear-filters" class="w-full px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                            Clear Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing Table -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="billing-tbody" class="bg-white divide-y divide-gray-200">
+                            <!-- Billing records will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6">
+                <div class="text-sm text-gray-700">
+                    Showing <span class="font-medium">1</span> to <span class="font-medium">10</span> of <span class="font-medium">124</span> results
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Previous</button>
+                    <button class="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm">1</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">2</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">3</button>
+                    <button class="px-3 py-1 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">Next</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-800">New Checkout</h3>
+                <button id="close-checkout" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="checkout-form" class="p-4 space-y-4">
+                <!-- Customer Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
+                    <select id="customer-select" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                        <option value="">Select customer</option>
+                        <option value="1">John Doe</option>
+                        <option value="2">Jane Smith</option>
+                        <option value="3">Bob Johnson</option>
+                        <option value="4">Alice Brown</option>
+                        <option value="5">Charlie Wilson</option>
+                    </select>
+                </div>
+
+                <!-- Order Items -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Order Items</label>
+                    <div id="checkout-items" class="space-y-2">
+                        <div class="flex gap-2 items-center">
+                            <select class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 item-select">
+                                <option value="">Select item</option>
+                                <option value="5.99">Continental Breakfast - $5.99</option>
+                                <option value="8.99">Grilled Chicken Sandwich - $8.99</option>
+                                <option value="14.99">Grilled Salmon - $14.99</option>
+                                <option value="3.49">Fresh Orange Juice - $3.49</option>
+                                <option value="6.99">Chocolate Cake - $6.99</option>
+                            </select>
+                            <input type="number" min="1" value="1" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 quantity-input">
+                            <button type="button" onclick="removeCheckoutItem(this)" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="button" id="add-checkout-item" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm">
+                        <i class="fas fa-plus mr-1"></i> Add Item
+                    </button>
+                </div>
+
+                <!-- Discount -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Discount</label>
+                    <div class="flex gap-2">
+                        <input type="number" id="discount-amount" min="0" step="0.01" placeholder="0.00" class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <select id="discount-type" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="fixed">Fixed Amount</option>
+                            <option value="percentage">Percentage</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="payment-method border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-method="cash">
+                            <div class="flex items-center">
+                                <i class="fas fa-money-bill-wave text-2xl text-green-600 mr-3"></i>
+                                <div>
+                                    <p class="font-medium">Cash</p>
+                                    <p class="text-sm text-gray-500">Pay with cash</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="payment-method border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-method="card">
+                            <div class="flex items-center">
+                                <i class="fas fa-credit-card text-2xl text-blue-600 mr-3"></i>
+                                <div>
+                                    <p class="font-medium">Card</p>
+                                    <p class="text-sm text-gray-500">Credit/Debit card</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="payment-method border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-method="mobile">
+                            <div class="flex items-center">
+                                <i class="fas fa-mobile-alt text-2xl text-purple-600 mr-3"></i>
+                                <div>
+                                    <p class="font-medium">Mobile</p>
+                                    <p class="text-sm text-gray-500">Mobile payment</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="payment-method border-2 border-gray-200 rounded-lg p-4 cursor-pointer" data-method="online">
+                            <div class="flex items-center">
+                                <i class="fas fa-globe text-2xl text-indigo-600 mr-3"></i>
+                                <div>
+                                    <p class="font-medium">Online</p>
+                                    <p class="text-sm text-gray-500">Online payment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="font-medium text-gray-800 mb-3">Order Summary</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Subtotal:</span>
+                            <span class="font-medium">$<span id="subtotal">0.00</span></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Discount:</span>
+                            <span class="font-medium text-red-600">-$<span id="discount-total">0.00</span></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Tax (10%):</span>
+                            <span class="font-medium">$<span id="tax">0.00</span></span>
+                        </div>
+                        <div class="border-t pt-2">
+                            <div class="flex justify-between">
+                                <span class="text-lg font-semibold">Total:</span>
+                                <span class="text-lg font-semibold">$<span id="total">0.00</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-4 border-t">
+                    <button type="button" id="cancel-checkout" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Process Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Processing Modal -->
+    <div id="payment-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+            <div class="p-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Process Payment</h3>
+            </div>
+            <div class="p-4">
+                <div id="payment-content">
+                    <!-- Payment form will be populated based on selected method -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Invoice Details Modal -->
+    <div id="invoice-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-800">Invoice Details</h3>
+                <button id="close-invoice" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="invoice-content" class="p-4">
+                <!-- Invoice details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample billing data
+        let billingRecords = [
+            { id: 'INV001', customer: 'John Doe', amount: 24.50, date: '2024-01-15', paymentMethod: 'cash', status: 'paid', items: ['Continental Breakfast', 'Fresh Orange Juice'] },
+            { id: 'INV002', customer: 'Jane Smith', amount: 15.98, date: '2024-01-15', paymentMethod: 'card', status: 'paid', items: ['Grilled Chicken Sandwich', 'Chocolate Cake'] },
+            { id: 'INV003', customer: 'Bob Johnson', amount: 14.99, date: '2024-01-15', paymentMethod: 'mobile', status: 'pending', items: ['Grilled Salmon'] },
+            { id: 'INV004', customer: 'Alice Brown', amount: 12.98, date: '2024-01-14', paymentMethod: 'cash', status: 'paid', items: ['Caesar Salad', 'Iced Coffee'] },
+            { id: 'INV005', customer: 'Charlie Wilson', amount: 10.98, date: '2024-01-14', paymentMethod: 'online', status: 'refunded', items: ['Veggie Omelette', 'Fresh Orange Juice'] },
+            { id: 'INV006', customer: 'Diana Davis', amount: 21.98, date: '2024-01-14', paymentMethod: 'card', status: 'pending', items: ['Beef Stir Fry', 'Tiramisu'] },
+            { id: 'INV007', customer: 'Eva Martinez', amount: 5.99, date: '2024-01-13', paymentMethod: 'cash', status: 'paid', items: ['Continental Breakfast'] },
+            { id: 'INV008', customer: 'Frank Miller', amount: 13.98, date: '2024-01-13', paymentMethod: 'mobile', status: 'overdue', items: ['Grilled Chicken Sandwich', 'Iced Coffee'] },
+            { id: 'INV009', customer: 'Grace Lee', amount: 6.99, date: '2024-01-13', paymentMethod: 'card', status: 'paid', items: ['Chocolate Cake'] },
+            { id: 'INV010', customer: 'Henry Taylor', amount: 18.48, date: '2024-01-12', paymentMethod: 'online', status: 'paid', items: ['Grilled Salmon', 'Fresh Orange Juice'] }
+        ];
+
+        let selectedPaymentMethod = null;
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Profile dropdown toggle
+        const profileDropdownButton = document.getElementById('profile-dropdown-button');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        profileDropdownButton.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!profileDropdownButton.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+
+        // Render billing table
+        function renderBilling(records = billingRecords) {
+            const tbody = document.getElementById('billing-tbody');
+            tbody.innerHTML = '';
+            
+            records.forEach(record => {
+                const row = document.createElement('tr');
+                row.className = 'table-row-hover';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${record.id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${record.customer}</div>
+                        <div class="text-sm text-gray-500">${record.items.length} items</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$${record.amount.toFixed(2)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(record.date)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <i class="fas ${getPaymentIcon(record.paymentMethod)} mr-2"></i>
+                            <span class="text-sm text-gray-900">${record.paymentMethod.charAt(0).toUpperCase() + record.paymentMethod.slice(1)}</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(record.status)}">
+                            ${record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button onclick="viewInvoice('${record.id}')" class="text-indigo-600 hover:text-indigo-900 action-btn" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="printInvoice('${record.id}')" class="text-blue-600 hover:text-blue-900 action-btn" title="Print">
+                                <i class="fas fa-print"></i>
+                            </button>
+                            ${record.status === 'paid' ? `<button onclick="processRefund('${record.id}')" class="text-yellow-600 hover:text-yellow-900 action-btn" title="Refund">
+                                <i class="fas fa-undo"></i>
+                            </button>` : ''}
+                            <button onclick="deleteInvoice('${record.id}')" class="text-red-600 hover:text-red-900 action-btn" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getPaymentIcon(method) {
+            const icons = {
+                cash: 'fa-money-bill-wave',
+                card: 'fa-credit-card',
+                mobile: 'fa-mobile-alt',
+                online: 'fa-globe'
+            };
+            return icons[method] || 'fa-money-bill-wave';
+        }
+
+        function getStatusClass(status) {
+            const classes = {
+                paid: 'bg-green-100 text-green-800',
+                pending: 'bg-yellow-100 text-yellow-800',
+                overdue: 'bg-red-100 text-red-800',
+                refunded: 'bg-gray-100 text-gray-800'
+            };
+            return classes[status] || 'bg-gray-100 text-gray-800';
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString();
+        }
+
+        // Checkout modal
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const checkoutModal = document.getElementById('checkout-modal');
+        const closeCheckout = document.getElementById('close-checkout');
+        const cancelCheckout = document.getElementById('cancel-checkout');
+        const checkoutForm = document.getElementById('checkout-form');
+
+        checkoutBtn.addEventListener('click', () => {
+            checkoutModal.classList.remove('hidden');
+        });
+
+        closeCheckout.addEventListener('click', () => {
+            checkoutModal.classList.add('hidden');
+        });
+
+        cancelCheckout.addEventListener('click', () => {
+            checkoutModal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        checkoutModal.addEventListener('click', (event) => {
+            if (event.target === checkoutModal) {
+                checkoutModal.classList.add('hidden');
+            }
+        });
+
+        // Add checkout item
+        document.getElementById('add-checkout-item').addEventListener('click', () => {
+            const itemsContainer = document.getElementById('checkout-items');
+            const newItem = document.createElement('div');
+            newItem.className = 'flex gap-2 items-center fade-in';
+            newItem.innerHTML = `
+                <select class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 item-select">
+                    <option value="">Select item</option>
+                    <option value="5.99">Continental Breakfast - $5.99</option>
+                    <option value="8.99">Grilled Chicken Sandwich - $8.99</option>
+                    <option value="14.99">Grilled Salmon - $14.99</option>
+                    <option value="3.49">Fresh Orange Juice - $3.49</option>
+                    <option value="6.99">Chocolate Cake - $6.99</option>
+                </select>
+                <input type="number" min="1" value="1" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 quantity-input">
+                <button type="button" onclick="removeCheckoutItem(this)" class="text-red-600 hover:text-red-800">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            itemsContainer.appendChild(newItem);
+            updateOrderTotal();
+        });
+
+        function removeCheckoutItem(button) {
+            button.parentElement.remove();
+            updateOrderTotal();
+        }
+
+        // Payment method selection
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', () => {
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                method.classList.add('selected');
+                selectedPaymentMethod = method.dataset.method;
+            });
+        });
+
+        // Update order total
+        function updateOrderTotal() {
+            let subtotal = 0;
+            const itemRows = document.querySelectorAll('#checkout-items > div');
+            
+            itemRows.forEach(row => {
+                const select = row.querySelector('.item-select');
+                const quantity = parseInt(row.querySelector('.quantity-input').value) || 0;
+                const price = parseFloat(select.value) || 0;
+                subtotal += price * quantity;
+            });
+
+            const discountAmount = parseFloat(document.getElementById('discount-amount').value) || 0;
+            const discountType = document.getElementById('discount-type').value;
+            let discount = 0;
+
+            if (discountType === 'fixed') {
+                discount = discountAmount;
+            } else {
+                discount = subtotal * (discountAmount / 100);
+            }
+
+            const tax = (subtotal - discount) * 0.1;
+            const total = subtotal - discount + tax;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('discount-total').textContent = discount.toFixed(2);
+            document.getElementById('tax').textContent = tax.toFixed(2);
+            document.getElementById('total').textContent = total.toFixed(2);
+        }
+
+        // Event listeners for total calculation
+        document.getElementById('checkout-items').addEventListener('change', updateOrderTotal);
+        document.getElementById('checkout-items').addEventListener('input', updateOrderTotal);
+        document.getElementById('discount-amount').addEventListener('input', updateOrderTotal);
+        document.getElementById('discount-type').addEventListener('change', updateOrderTotal);
+
+        // Process checkout
+        checkoutForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            if (!selectedPaymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+
+            // Show payment processing modal
+            showPaymentModal();
+        });
+
+        function showPaymentModal() {
+            const paymentModal = document.getElementById('payment-modal');
+            const paymentContent = document.getElementById('payment-content');
+            
+            let paymentForm = '';
+            switch(selectedPaymentMethod) {
+                case 'cash':
+                    paymentForm = `
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Cash Received</label>
+                                <input type="number" id="cash-received" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0.00">
+                            </div>
+                            <div id="change-info" class="hidden">
+                                <p class="text-sm text-gray-600">Change to return: <span class="font-semibold">$<span id="change-amount">0.00</span></span></p>
+                            </div>
+                            <button onclick="processCashPayment()" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">Process Payment</button>
+                        </div>
+                    `;
+                    break;
+                case 'card':
+                    paymentForm = `
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
+                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="1234 5678 9012 3456">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="MM/YY">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
+                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="123">
+                                </div>
+                            </div>
+                            <button onclick="processCardPayment()" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Process Payment</button>
+                        </div>
+                    `;
+                    break;
+                case 'mobile':
+                    paymentForm = `
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                                <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="+1 234-567-8900">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Payment App</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>PayPal</option>
+                                    <option>Venmo</option>
+                                    <option>Cash App</option>
+                                    <option>Apple Pay</option>
+                                </select>
+                            </div>
+                            <button onclick="processMobilePayment()" class="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Process Payment</button>
+                        </div>
+                    `;
+                    break;
+                case 'online':
+                    paymentForm = `
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="customer@email.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Payment Gateway</label>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>Stripe</option>
+                                    <option>PayPal</option>
+                                    <option>Square</option>
+                                </select>
+                            </div>
+                            <button onclick="processOnlinePayment()" class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">Send Payment Link</button>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            paymentContent.innerHTML = paymentForm;
+            paymentModal.classList.remove('hidden');
+        }
+
+        function processCashPayment() {
+            const total = parseFloat(document.getElementById('total').textContent);
+            const cashReceived = parseFloat(document.getElementById('cash-received').value);
+            
+            if (cashReceived >= total) {
+                const change = cashReceived - total;
+                document.getElementById('change-amount').textContent = change.toFixed(2);
+                document.getElementById('change-info').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    completePayment();
+                }, 1500);
+            } else {
+                alert('Insufficient cash received');
+            }
+        }
+
+        function processCardPayment() {
+            // Simulate card processing
+            setTimeout(() => {
+                completePayment();
+            }, 2000);
+        }
+
+        function processMobilePayment() {
+            // Simulate mobile payment
+            setTimeout(() => {
+                completePayment();
+            }, 1500);
+        }
+
+        function processOnlinePayment() {
+            // Simulate online payment
+            alert('Payment link sent to customer email');
+            completePayment();
+        }
+
+        function completePayment() {
+            // Create new billing record
+            const customerId = document.getElementById('customer-select').value;
+            const customerName = document.getElementById('customer-select').options[document.getElementById('customer-select').selectedIndex].text;
+            const total = parseFloat(document.getElementById('total').textContent);
+            const items = [];
+            
+            document.querySelectorAll('#checkout-items > div').forEach(row => {
+                const select = row.querySelector('.item-select');
+                const itemName = select.options[select.selectedIndex].text.split(' - $')[0];
+                if (itemName) {
+                    items.push(itemName);
+                }
+            });
+            
+            const newRecord = {
+                id: 'INV' + String(billingRecords.length + 1).padStart(3, '0'),
+                customer: customerName,
+                amount: total,
+                date: new Date().toISOString().split('T')[0],
+                paymentMethod: selectedPaymentMethod,
+                status: 'paid',
+                items: items
+            };
+            
+            billingRecords.unshift(newRecord);
+            renderBilling();
+            
+            // Close modals
+            document.getElementById('payment-modal').classList.add('hidden');
+            checkoutModal.classList.add('hidden');
+            
+            // Reset form
+            checkoutForm.reset();
+            document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+            selectedPaymentMethod = null;
+            document.getElementById('checkout-items').innerHTML = `
+                <div class="flex gap-2 items-center">
+                    <select class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 item-select">
+                        <option value="">Select item</option>
+                        <option value="5.99">Continental Breakfast - $5.99</option>
+                        <option value="8.99">Grilled Chicken Sandwich - $8.99</option>
+                        <option value="14.99">Grilled Salmon - $14.99</option>
+                        <option value="3.49">Fresh Orange Juice - $3.49</option>
+                        <option value="6.99">Chocolate Cake - $6.99</option>
+                    </select>
+                    <input type="number" min="1" value="1" class="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 quantity-input">
+                    <button type="button" onclick="removeCheckoutItem(this)" class="text-red-600 hover:text-red-800">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            updateOrderTotal();
+            
+            alert('Payment processed successfully!');
+        }
+
+        // View invoice
+        function viewInvoice(id) {
+            const record = billingRecords.find(r => r.id === id);
+            if (record) {
+                const content = document.getElementById('invoice-content');
+                content.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="text-center">
+                            <h4 class="text-xl font-bold text-gray-800">Invoice ${record.id}</h4>
+                            <p class="text-sm text-gray-500">${formatDate(record.date)}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Customer</p>
+                            <p class="text-gray-900">${record.customer}</p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm font-medium text-gray-700">Items</p>
+                            <ul class="mt-1 space-y-1">
+                                ${record.items.map(item => `<li class="text-gray-900">• ${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Payment Method</p>
+                                <p class="text-gray-900">${record.paymentMethod.charAt(0).toUpperCase() + record.paymentMethod.slice(1)}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Status</p>
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusClass(record.status)}">
+                                    ${record.status.charAt(0).toUpperCase() + record.status.slice(1)}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 border-t">
+                            <div class="flex justify-between">
+                                <p class="text-lg font-semibold">Total Amount:</p>
+                                <p class="text-lg font-semibold">$${record.amount.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('invoice-modal').classList.remove('hidden');
+            }
+        }
+
+        // Print invoice
+        function printInvoice(id) {
+            alert(`Printing invoice ${id}...`);
+            // In a real application, this would open a print dialog
+        }
+
+        // Process refund
+        function processRefund(id) {
+            if (confirm('Are you sure you want to process a refund for this invoice?')) {
+                const record = billingRecords.find(r => r.id === id);
+                if (record) {
+                    record.status = 'refunded';
+                    renderBilling();
+                    alert('Refund processed successfully');
+                }
+            }
+        }
+
+        // Delete invoice
+        function deleteInvoice(id) {
+            if (confirm('Are you sure you want to delete this invoice?')) {
+                billingRecords = billingRecords.filter(record => record.id !== id);
+                renderBilling();
+            }
+        }
+
+        // Close invoice modal
+        document.getElementById('close-invoice').addEventListener('click', () => {
+            document.getElementById('invoice-modal').classList.add('hidden');
+        });
+
+        // Close invoice modal when clicking outside
+        document.getElementById('invoice-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'invoice-modal') {
+                document.getElementById('invoice-modal').classList.add('hidden');
+            }
+        });
+
+        // Close payment modal when clicking outside
+        document.getElementById('payment-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'payment-modal') {
+                document.getElementById('payment-modal').classList.add('hidden');
+            }
+        });
+
+        // Filter functionality
+        const statusFilter = document.getElementById('status-filter');
+        const dateFilter = document.getElementById('date-filter');
+        const paymentFilter = document.getElementById('payment-filter');
+        const clearFilters = document.getElementById('clear-filters');
+
+        function applyFilters() {
+            let filteredRecords = billingRecords;
+            
+            if (statusFilter.value) {
+                filteredRecords = filteredRecords.filter(record => record.status === statusFilter.value);
+            }
+            
+            if (dateFilter.value) {
+                const today = new Date();
+                const recordDate = new Date();
+                
+                switch(dateFilter.value) {
+                    case 'today':
+                        filteredRecords = filteredRecords.filter(record => {
+                            const orderDate = new Date(record.date);
+                            return orderDate.toDateString() === today.toDateString();
+                        });
+                        break;
+                    case 'week':
+                        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        filteredRecords = filteredRecords.filter(record => {
+                            const orderDate = new Date(record.date);
+                            return orderDate >= weekAgo;
+                        });
+                        break;
+                    case 'month':
+                        const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+                        filteredRecords = filteredRecords.filter(record => {
+                            const orderDate = new Date(record.date);
+                            return orderDate >= monthAgo;
+                        });
+                        break;
+                }
+            }
+            
+            if (paymentFilter.value) {
+                filteredRecords = filteredRecords.filter(record => record.paymentMethod === paymentFilter.value);
+            }
+            
+            renderBilling(filteredRecords);
+        }
+
+        statusFilter.addEventListener('change', applyFilters);
+        dateFilter.addEventListener('change', applyFilters);
+        paymentFilter.addEventListener('change', applyFilters);
+
+        clearFilters.addEventListener('click', () => {
+            statusFilter.value = '';
+            dateFilter.value = '';
+            paymentFilter.value = '';
+            renderBilling();
+        });
+
+        // Initial render
+        renderBilling();
+    </script>
+</body>
+</html>
