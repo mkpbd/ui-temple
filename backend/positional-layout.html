@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Positional Layout with Tailwind CSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Tab content animation */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Position indicator */
+        .position-indicator {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #ef4444;
+            z-index: 10;
+        }
+        
+        .position-indicator.top-left {
+            top: -6px;
+            left: -6px;
+        }
+        
+        .position-indicator.top-right {
+            top: -6px;
+            right: -6px;
+        }
+        
+        .position-indicator.bottom-left {
+            bottom: -6px;
+            left: -6px;
+        }
+        
+        .position-indicator.bottom-right {
+            bottom: -6px;
+            right: -6px;
+        }
+        
+        /* Interactive positioning demo */
+        .position-demo {
+            transition: all 0.3s ease;
+        }
+        
+        /* Notification badge animation */
+        @keyframes badge-pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .badge-animation {
+            animation: badge-pop 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header with Fixed Positioning -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 sm:mb-0">
+                    <i class="fas fa-crosshairs text-indigo-600 text-2xl"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">Positional Layout Showcase</h1>
+                </div>
+                <nav class="flex space-x-1 bg-gray-100 rounded-lg p-1">
+                    <button class="tab-btn px-4 py-2 rounded-md bg-white text-indigo-600 font-medium transition-all duration-300" data-tab="absolute">Absolute</button>
+                    <button class="tab-btn px-4 py-2 rounded-md text-gray-600 hover:bg-gray-200 font-medium transition-all duration-300" data-tab="relative">Relative</button>
+                    <button class="tab-btn px-4 py-2 rounded-md text-gray-600 hover:bg-gray-200 font-medium transition-all duration-300" data-tab="fixed">Fixed</button>
+                    <button class="tab-btn px-4 py-2 rounded-md text-gray-600 hover:bg-gray-200 font-medium transition-all duration-300" data-tab="sticky">Sticky</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content with padding to account for fixed header -->
+    <main class="container mx-auto px-4 pt-24 pb-8">
+        <!-- Tab 1: Absolute Positioning -->
+        <div id="absolute" class="tab-content active">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Absolute Positioning</h2>
+                <p class="text-gray-600">Elements positioned relative to their nearest positioned ancestor.</p>
+            </div>
+            
+            <!-- Absolute Positioning Demo -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8 relative h-96 overflow-hidden">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Interactive Absolute Positioning Demo</h3>
+                <p class="text-gray-600 mb-6">Click the buttons to position the red box at different corners of this container.</p>
+                
+                <!-- Control Buttons -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button class="position-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="top-left">Top Left</button>
+                    <button class="position-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="top-right">Top Right</button>
+                    <button class="position-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="bottom-left">Bottom Left</button>
+                    <button class="position-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="bottom-right">Bottom Right</button>
+                    <button class="position-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="center">Center</button>
+                </div>
+                
+                <!-- Absolutely Positioned Element -->
+                <div id="absolute-box" class="absolute w-24 h-24 bg-red-500 rounded-lg shadow-lg transition-all duration-500 flex items-center justify-center text-white font-bold">
+                    Box
+                </div>
+                
+                <!-- Position Indicators -->
+                <div class="position-indicator top-left"></div>
+                <div class="position-indicator top-right"></div>
+                <div class="position-indicator bottom-left"></div>
+                <div class="position-indicator bottom-right"></div>
+            </div>
+            
+            <!-- Absolute Positioning Examples -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Image with Overlay -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden relative">
+                    <img src="https://picsum.photos/seed/absolute1/600/400.jpg" alt="Example" class="w-full h-64 object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-4 text-white">
+                        <h3 class="text-xl font-bold mb-1">Image with Overlay</h3>
+                        <p class="text-sm">Overlay positioned absolutely over the image.</p>
+                    </div>
+                </div>
+                
+                <!-- Card with Badge -->
+                <div class="bg-white rounded-lg shadow-lg p-6 relative">
+                    <div class="absolute top-0 right-0 bg-red-500 text-white px-3 py-1 rounded-bl-lg rounded-tr-lg">
+                        New
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Card with Badge</h3>
+                    <p class="text-gray-600 mb-4">Badge positioned absolutely at the top-right corner.</p>
+                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+                        Learn More
+                    </button>
+                </div>
+                
+                <!-- Tooltip Example -->
+                <div class="bg-white rounded-lg shadow-lg p-6 relative">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Tooltip Example</h3>
+                    <p class="text-gray-600 mb-4">Hover over the icon to see the tooltip.</p>
+                    <div class="relative inline-block">
+                        <i class="fas fa-info-circle text-indigo-600 text-xl cursor-help"></i>
+                        <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg whitespace-nowrap opacity-0 invisible hover:opacity-100 hover:visible transition-opacity duration-300">
+                            This is a tooltip positioned absolutely
+                            <div class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                <div class="border-4 border-transparent border-t-gray-800"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Floating Action Button -->
+                <div class="bg-white rounded-lg shadow-lg p-6 relative h-48">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Floating Action Button</h3>
+                    <p class="text-gray-600">Button positioned absolutely at the bottom-right corner.</p>
+                    <button class="absolute bottom-4 right-4 w-12 h-12 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Relative Positioning -->
+        <div id="relative" class="tab-content">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Relative Positioning</h2>
+                <p class="text-gray-600">Elements positioned relative to their normal position in the document flow.</p>
+            </div>
+            
+            <!-- Relative Positioning Demo -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Interactive Relative Positioning Demo</h3>
+                <p class="text-gray-600 mb-6">Click the buttons to shift the blue box from its normal position.</p>
+                
+                <!-- Control Buttons -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button class="relative-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="top">Move Up</button>
+                    <button class="relative-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="right">Move Right</button>
+                    <button class="relative-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="bottom">Move Down</button>
+                    <button class="relative-btn px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors" data-position="left">Move Left</button>
+                    <button class="relative-btn px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors" data-position="reset">Reset</button>
+                </div>
+                
+                <!-- Container with Normal and Relative Elements -->
+                <div class="border-2 border-dashed border-gray-300 p-4">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="h-24 bg-gray-200 rounded-lg flex items-center justify-center text-gray-600">
+                            Normal Position
+                        </div>
+                        <div id="relative-box" class="h-24 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold transition-all duration-500">
+                            Relative Position
+                        </div>
+                        <div class="h-24 bg-gray-200 rounded-lg flex items-center justify-center text-gray-600">
+                            Normal Position
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Relative Positioning Examples -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Navigation with Active State -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Navigation with Active State</h3>
+                    <nav class="flex space-x-1">
+                        <a href="#" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors">Home</a>
+                        <a href="#" class="relative px-4 py-2 text-indigo-600 bg-indigo-50 rounded-md">
+                            Products
+                            <span class="absolute -bottom-1 left-0 right-0 h-0.5 bg-indigo-600"></span>
+                        </a>
+                        <a href="#" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors">About</a>
+                        <a href="#" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors">Contact</a>
+                    </nav>
+                </div>
+                
+                <!-- Form with Error Message -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Form with Error Message</h3>
+                    <form>
+                        <div class="mb-4 relative">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="email" class="w-full px-3 py-2 border border-red-500 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" value="invalid-email">
+                            <p class="absolute -bottom-5 left-0 text-xs text-red-500">Please enter a valid email address</p>
+                        </div>
+                        <div class="mb-4 mt-6">
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
+                            Sign In
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Card with Shadow Effect -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Card with Shadow Effect</h3>
+                    <div class="relative">
+                        <div class="h-32 bg-gray-100 rounded-lg mb-4"></div>
+                        <div class="relative -mt-8 mx-4 bg-white rounded-lg shadow-lg p-4">
+                            <h4 class="font-semibold text-gray-800">Elevated Card</h4>
+                            <p class="text-sm text-gray-600">This card is positioned relatively to appear elevated above the background.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Icon with Notification -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Icon with Notification</h3>
+                    <div class="flex space-x-4">
+                        <div class="relative">
+                            <i class="fas fa-envelope text-gray-600 text-2xl"></i>
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+                        </div>
+                        <div class="relative">
+                            <i class="fas fa-bell text-gray-600 text-2xl"></i>
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">5</span>
+                        </div>
+                        <div class="relative">
+                            <i class="fas fa-comment text-gray-600 text-2xl"></i>
+                            <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">2</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Fixed Positioning -->
+        <div id="fixed" class="tab-content">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Fixed Positioning</h2>
+                <p class="text-gray-600">Elements positioned relative to the viewport, staying in the same place even when the page is scrolled.</p>
+            </div>
+            
+            <!-- Fixed Positioning Demo -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Fixed Positioning Demo</h3>
+                <p class="text-gray-600 mb-6">Scroll down to see the fixed elements in action.</p>
+                
+                <!-- Scrollable Content Area -->
+                <div class="border-2 border-dashed border-gray-300 p-4 h-64 overflow-y-auto">
+                    <div class="space-y-4">
+                        <p class="text-gray-600">This is a scrollable content area. As you scroll, notice how the fixed elements remain in place.</p>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 1</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 2</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 3</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 4</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 5</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 6</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 7</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 8</div>
+                    </div>
+                    
+                    <!-- Fixed Element within Scrollable Area -->
+                    <div class="fixed bottom-4 right-4 bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-colors cursor-pointer">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Fixed Positioning Examples -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Fixed Sidebar -->
+                <div class="bg-white rounded-lg shadow-lg p-6 relative h-96 overflow-hidden">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Fixed Sidebar</h3>
+                    <div class="flex h-64">
+                        <div class="w-1/3 bg-gray-100 rounded-l-lg relative">
+                            <div class="fixed left-0 top-1/2 transform -translate-y-1/2 bg-indigo-600 text-white p-4 rounded-r-lg">
+                                <i class="fas fa-bars"></i>
+                            </div>
+                        </div>
+                        <div class="w-2/3 p-4 bg-gray-50 rounded-r-lg">
+                            <p class="text-gray-600">Main content area with a fixed sidebar on the left.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Fixed Header -->
+                <div class="bg-white rounded-lg shadow-lg p-6 relative h-96 overflow-hidden">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Fixed Header</h3>
+                    <div class="h-64 relative">
+                        <div class="fixed top-0 left-0 right-0 bg-indigo-600 text-white p-3 text-center">
+                            Fixed Header
+                        </div>
+                        <div class="pt-12 p-4 bg-gray-50 h-full">
+                            <p class="text-gray-600">Content area with a fixed header at the top.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Fixed Footer -->
+                <div class="bg-white rounded-lg shadow-lg p-6 relative h-96 overflow-hidden">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Fixed Footer</h3>
+                    <div class="h-64 relative">
+                        <div class="p-4 bg-gray-50 h-64 pb-16">
+                            <p class="text-gray-600">Content area with a fixed footer at the bottom.</p>
+                        </div>
+                        <div class="fixed bottom-0 left-0 right-0 bg-indigo-600 text-white p-3 text-center">
+                            Fixed Footer
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Fixed Action Buttons -->
+                <div class="bg-white rounded-lg shadow-lg p-6 relative h-96 overflow-hidden">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Fixed Action Buttons</h3>
+                    <div class="h-64 relative bg-gray-50 rounded-lg">
+                        <p class="text-gray-600 p-4">Content area with fixed action buttons.</p>
+                        <div class="fixed bottom-4 right-4 flex flex-col space-y-2">
+                            <button class="w-10 h-10 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="w-10 h-10 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-colors flex items-center justify-center">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="w-10 h-10 bg-red-600 text-white rounded-full shadow-lg hover:bg-red-700 transition-colors flex items-center justify-center">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Sticky Positioning -->
+        <div id="sticky" class="tab-content">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2">Sticky Positioning</h2>
+                <p class="text-gray-600">Elements positioned based on the user's scroll position, toggling between relative and fixed.</p>
+            </div>
+            
+            <!-- Sticky Positioning Demo -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Sticky Positioning Demo</h3>
+                <p class="text-gray-600 mb-6">Scroll down to see how the sticky element behaves when it reaches the top of the viewport.</p>
+                
+                <!-- Scrollable Content Area with Sticky Element -->
+                <div class="border-2 border-dashed border-gray-300 p-4 h-96 overflow-y-auto">
+                    <div class="space-y-4">
+                        <p class="text-gray-600">This is a scrollable content area. As you scroll, the sticky element will stick to the top when it reaches the viewport edge.</p>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 1</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 2</div>
+                        
+                        <!-- Sticky Element -->
+                        <div class="sticky top-0 bg-indigo-600 text-white p-4 rounded-lg shadow-lg z-10">
+                            <h4 class="font-semibold">Sticky Element</h4>
+                            <p class="text-sm">This element will stick to the top when you scroll past it.</p>
+                        </div>
+                        
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 3</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 4</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 5</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 6</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 7</div>
+                        <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 8</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sticky Positioning Examples -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Sticky Table Header -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Sticky Table Header</h3>
+                    <div class="h-64 overflow-y-auto border border-gray-200 rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 sticky top-0 z-10">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">John Doe</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Developer</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Jane Smith</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Designer</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Mike Johnson</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Manager</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Away</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Sarah Williams</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Developer</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Tom Brown</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Designer</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Sticky Sidebar Navigation -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Sticky Sidebar Navigation</h3>
+                    <div class="flex h-64">
+                        <div class="w-1/3 pr-4">
+                            <div class="sticky top-0 space-y-2">
+                                <a href="#" class="block px-3 py-2 bg-indigo-600 text-white rounded-md">Section 1</a>
+                                <a href="#" class="block px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Section 2</a>
+                                <a href="#" class="block px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Section 3</a>
+                                <a href="#" class="block px-3 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Section 4</a>
+                            </div>
+                        </div>
+                        <div class="w-2/3 pl-4 border-l border-gray-200">
+                            <div class="h-64 overflow-y-auto space-y-4">
+                                <div class="h-20 bg-gray-100 rounded-lg p-4">Section 1 content</div>
+                                <div class="h-20 bg-gray-100 rounded-lg p-4">Section 2 content</div>
+                                <div class="h-20 bg-gray-100 rounded-lg p-4">Section 3 content</div>
+                                <div class="h-20 bg-gray-100 rounded-lg p-4">Section 4 content</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sticky Card -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Sticky Card</h3>
+                    <div class="h-64 overflow-y-auto">
+                        <div class="space-y-4">
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 1</div>
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 2</div>
+                            
+                            <!-- Sticky Card -->
+                            <div class="sticky top-0 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-10">
+                                <h4 class="font-semibold text-gray-800 mb-2">Important Information</h4>
+                                <p class="text-sm text-gray-600">This card contains important information that stays visible as you scroll.</p>
+                                <button class="mt-2 px-3 py-1 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition-colors">
+                                    Learn More
+                                </button>
+                            </div>
+                            
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 3</div>
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 4</div>
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Content block 5</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sticky Tabs -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Sticky Tabs</h3>
+                    <div class="h-64 overflow-y-auto">
+                        <!-- Sticky Tab Headers -->
+                        <div class="sticky top-0 bg-white border-b border-gray-200 z-10">
+                            <div class="flex space-x-1">
+                                <button class="px-4 py-2 bg-indigo-600 text-white rounded-t-md">Tab 1</button>
+                                <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-t-md hover:bg-gray-300">Tab 2</button>
+                                <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-t-md hover:bg-gray-300">Tab 3</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Tab Content -->
+                        <div class="p-4 space-y-4">
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Tab 1 content block 1</div>
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Tab 1 content block 2</div>
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Tab 1 content block 3</div>
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Tab 1 content block 4</div>
+                            <div class="h-20 bg-gray-100 rounded-lg p-4">Tab 1 content block 5</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Fixed Notification -->
+    <div id="notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle mr-2"></i>
+            <span id="notification-text">Action completed successfully!</span>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p>&copy; 2023 Positional Layout Showcase. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="hover:text-indigo-400 transition-colors"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="hover:text-indigo-400 transition-colors"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-indigo-400 transition-colors"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-indigo-400 transition-colors"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Update active button styles
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('bg-white', 'text-indigo-600');
+                    btn.classList.add('text-gray-600', 'hover:bg-gray-200');
+                });
+                
+                button.classList.remove('text-gray-600', 'hover:bg-gray-200');
+                button.classList.add('bg-white', 'text-indigo-600');
+                
+                // Show corresponding tab content
+                const tabId = button.getAttribute('data-tab');
+                
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Absolute positioning demo
+        const positionButtons = document.querySelectorAll('.position-btn');
+        const absoluteBox = document.getElementById('absolute-box');
+        
+        positionButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const position = button.getAttribute('data-position');
+                
+                // Reset all position classes
+                absoluteBox.className = 'absolute w-24 h-24 bg-red-500 rounded-lg shadow-lg transition-all duration-500 flex items-center justify-center text-white font-bold';
+                
+                // Apply new position
+                switch(position) {
+                    case 'top-left':
+                        absoluteBox.style.top = '20px';
+                        absoluteBox.style.left = '20px';
+                        absoluteBox.style.bottom = 'auto';
+                        absoluteBox.style.right = 'auto';
+                        absoluteBox.style.transform = 'none';
+                        break;
+                    case 'top-right':
+                        absoluteBox.style.top = '20px';
+                        absoluteBox.style.right = '20px';
+                        absoluteBox.style.bottom = 'auto';
+                        absoluteBox.style.left = 'auto';
+                        absoluteBox.style.transform = 'none';
+                        break;
+                    case 'bottom-left':
+                        absoluteBox.style.bottom = '20px';
+                        absoluteBox.style.left = '20px';
+                        absoluteBox.style.top = 'auto';
+                        absoluteBox.style.right = 'auto';
+                        absoluteBox.style.transform = 'none';
+                        break;
+                    case 'bottom-right':
+                        absoluteBox.style.bottom = '20px';
+                        absoluteBox.style.right = '20px';
+                        absoluteBox.style.top = 'auto';
+                        absoluteBox.style.left = 'auto';
+                        absoluteBox.style.transform = 'none';
+                        break;
+                    case 'center':
+                        absoluteBox.style.top = '50%';
+                        absoluteBox.style.left = '50%';
+                        absoluteBox.style.bottom = 'auto';
+                        absoluteBox.style.right = 'auto';
+                        absoluteBox.style.transform = 'translate(-50%, -50%)';
+                        break;
+                }
+                
+                // Show notification
+                showNotification(`Box positioned at ${position.replace('-', ' ')}`);
+            });
+        });
+        
+        // Relative positioning demo
+        const relativeButtons = document.querySelectorAll('.relative-btn');
+        const relativeBox = document.getElementById('relative-box');
+        let currentTop = 0;
+        let currentLeft = 0;
+        
+        relativeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const position = button.getAttribute('data-position');
+                
+                // Reset position if reset button is clicked
+                if (position === 'reset') {
+                    currentTop = 0;
+                    currentLeft = 0;
+                    relativeBox.style.top = '0';
+                    relativeBox.style.left = '0';
+                    relativeBox.style.bottom = 'auto';
+                    relativeBox.style.right = 'auto';
+                    showNotification('Box position reset');
+                    return;
+                }
+                
+                // Update position based on button
+                switch(position) {
+                    case 'top':
+                        currentTop -= 20;
+                        break;
+                    case 'right':
+                        currentLeft += 20;
+                        break;
+                    case 'bottom':
+                        currentTop += 20;
+                        break;
+                    case 'left':
+                        currentLeft -= 20;
+                        break;
+                }
+                
+                // Apply new position
+                relativeBox.style.top = `${currentTop}px`;
+                relativeBox.style.left = `${currentLeft}px`;
+                relativeBox.style.bottom = 'auto';
+                relativeBox.style.right = 'auto';
+                
+                showNotification(`Box moved ${position}`);
+            });
+        });
+        
+        // Notification function
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.classList.remove('translate-x-full');
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+            }, 3000);
+        }
+        
+        // Add click interaction to all buttons
+        const allButtons = document.querySelectorAll('button');
+        
+        allButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Skip if button is part of a demo with its own functionality
+                if (this.classList.contains('position-btn') || 
+                    this.classList.contains('relative-btn') || 
+                    this.classList.contains('tab-btn')) {
+                    return;
+                }
+                
+                // Add ripple effect
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('absolute', 'bg-white', 'opacity-30', 'rounded-full');
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s ease-out';
+                
+                // Add ripple styles if not already in the document
+                if (!document.querySelector('style[data-ripple]')) {
+                    const style = document.createElement('style');
+                    style.setAttribute('data-ripple', 'true');
+                    style.textContent = `
+                        @keyframes ripple {
+                            to {
+                                transform: scale(4);
+                                opacity: 0;
+                            }
+                        }
+                        button {
+                            position: relative;
+                            overflow: hidden;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+                
+                // Show notification for generic buttons
+                if (!this.closest('.tab-content.active')) {
+                    showNotification('Button clicked!');
+                }
+            });
+        });
+        
+        // Simulate badge updates
+        setInterval(() => {
+            const badges = document.querySelectorAll('.fa-envelope, .fa-bell, .fa-comment').forEach(icon => {
+                const badge = icon.nextElementSibling;
+                if (badge && badge.tagName === 'SPAN') {
+                    const count = Math.floor(Math.random() * 10);
+                    badge.textContent = count;
+                    badge.classList.add('badge-animation');
+                    setTimeout(() => {
+                        badge.classList.remove('badge-animation');
+                    }, 300);
+                }
+            });
+        }, 5000);
+    </script>
+</body>
+</html>
