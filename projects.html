@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Lumina Interiors</title>
+    <meta name="description" content="Explore our portfolio of modern interior design projects.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo"><a href="index.html">LUMINA</a></div>
+        <div class="nav-links">
+            <a href="projects.html" class="active">Projects</a>
+            <a href="about.html">Studio</a>
+            <a href="contact.html">Contact</a>
+            <a href="contact.html" class="btn-primary">Let's Talk</a>
+        </div>
+        <div class="menu-toggle">
+            <i class="ph ph-list"></i>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <h1 class="animate-title">Our Work</h1>
+        </div>
+    </header>
+
+    <section class="projects-section">
+        <div class="container">
+            <div class="filter-bar animate-fade-up">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="residential">Residential</button>
+                <button class="filter-btn" data-filter="commercial">Commercial</button>
+                <button class="filter-btn" data-filter="bespoke">Bespoke</button>
+            </div>
+
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <div class="project-card animate-card" data-category="residential">
+                    <a href="#">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                                alt="Modern Living">
+                        </div>
+                        <div class="project-info">
+                            <h3>The Glass House</h3>
+                            <span>Residential</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card animate-card" data-category="commercial" data-delay="0.1">
+                    <a href="#">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                                alt="Office Space">
+                        </div>
+                        <div class="project-info">
+                            <h3>Apex HQ</h3>
+                            <span>Commercial</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card animate-card" data-category="residential" data-delay="0.2">
+                    <a href="#">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                                alt="Luxury Bathroom">
+                        </div>
+                        <div class="project-info">
+                            <h3>Marble Sanctuary</h3>
+                            <span>Residential</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card animate-card" data-category="bespoke">
+                    <a href="#">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1615529182904-14819c35db37?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                                alt="Custom Furniture">
+                        </div>
+                        <div class="project-info">
+                            <h3>Eclat Lounge</h3>
+                            <span>Bespoke</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card animate-card" data-category="commercial" data-delay="0.1">
+                    <a href="#">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1577412647305-991150c7d163?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                                alt="Boutique Hotel">
+                        </div>
+                        <div class="project-info">
+                            <h3>Hotel Noir</h3>
+                            <span>Commercial</span>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card animate-card" data-category="residential" data-delay="0.2">
+                    <a href="#">
+                        <div class="project-img">
+                            <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
+                                alt="Minimalist Bedroom">
+                        </div>
+                        <div class="project-info">
+                            <h3>Zenith Apartment</h3>
+                            <span>Residential</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="brand">
+                    <div class="logo">LUMINA</div>
+                    <p>Creating spaces for the modern soul.</p>
+                </div>
+                <div class="links">
+                    <h4>Studio</h4>
+                    <a href="projects.html">Projects</a>
+                    <a href="about.html">About</a>
+                    <a href="#">Journal</a>
+                    <a href="#">Careers</a>
+                </div>
+                <div class="socials">
+                    <h4>Connect</h4>
+                    <a href="#">Instagram</a>
+                    <a href="#">Pinterest</a>
+                    <a href="#">LinkedIn</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Lumina Interiors. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>

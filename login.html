@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Lumina Interiors</title>
+    <meta name="description" content="Access your Lumina Interiors client portal.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="login-body">
+    <nav class="navbar">
+        <div class="logo"><a href="index.html">LUMINA</a></div>
+        <div class="nav-links">
+            <a href="projects.html">Projects</a>
+            <a href="about.html">Studio</a>
+            <a href="contact.html">Contact</a>
+            <a href="login.html" class="active">Login</a>
+            <a href="contact.html" class="btn-primary">Let's Talk</a>
+        </div>
+        <div class="menu-toggle">
+            <i class="ph ph-list"></i>
+        </div>
+    </nav>
+
+    <div class="login-container">
+        <div class="login-card animate-fade-up">
+            <div class="login-header">
+                <h2>Welcome Back</h2>
+                <p>Enter your details to access your account.</p>
+            </div>
+
+            <form class="login-form" action="index.html">
+                <div class="form-group floating-label">
+                    <input type="email" id="email" name="email" required placeholder=" " autocomplete="email">
+                    <label for="email">Email Address</label>
+                </div>
+
+                <div class="form-group floating-label">
+                    <input type="password" id="password" name="password" required placeholder=" "
+                        autocomplete="current-password">
+                    <label for="password">Password</label>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn-submit btn-block">Sign In</button>
+
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#">Sign up</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/main.js"></script>
+</body>
+
+</html>
