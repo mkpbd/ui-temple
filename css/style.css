@@ -3,12 +3,27 @@
     --color-text: #f0f0f0;
     --color-text-muted: #a0a0a0;
     --color-accent: #c6a87c;
+    --color-btn-bg: #c6a87c;
+    --color-btn-text: #0a0a0a;
+    --color-btn-border: #c6a87c;
+    --color-navbar-bg: rgba(10, 10, 10, 0.8);
 
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Outfit', sans-serif;
 
     --spacing-container: 80px;
     --spacing-md: 40px;
+}
+
+[data-theme="light"] {
+    --color-bg: #ffffff;
+    --color-text: #0a0a0a;
+    --color-text-muted: #666666;
+    --color-accent: #a38a65;
+    --color-btn-bg: #a38a65;
+    --color-btn-text: #ffffff;
+    --color-btn-border: #a38a65;
+    --color-navbar-bg: rgba(255, 255, 255, 0.9);
 }
 
 * {
@@ -24,6 +39,7 @@ body {
     line-height: 1.6;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 h1,
@@ -57,12 +73,14 @@ img {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 30px 60px;
+    padding: 20px 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 100;
-    mix-blend-mode: difference;
+    background: var(--color-navbar-bg);
+    backdrop-filter: blur(10px);
+    transition: background-color 0.3s ease;
 }
 
 .logo {
@@ -70,11 +88,12 @@ img {
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    color: var(--color-text);
 }
 
 .nav-links {
     display: flex;
-    gap: 40px;
+    gap: 30px;
     align-items: center;
 }
 
@@ -83,6 +102,7 @@ img {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     opacity: 0.8;
+    color: var(--color-text);
 }
 
 .nav-links a:hover {
@@ -91,14 +111,50 @@ img {
 }
 
 .btn-primary {
-    border: 1px solid currentColor;
-    padding: 10px 24px;
-    border-radius: 100px;
+    background-color: var(--color-btn-bg);
+    color: var(--color-btn-text) !important;
+    border: 1px solid var(--color-btn-bg);
+    padding: 12px 28px;
+    border-radius: 4px;
+    font-weight: 500;
+    opacity: 1 !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    background-color: transparent;
+    color: var(--color-btn-bg) !important;
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--color-text-muted);
+    color: var(--color-text);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 20px;
+}
+
+.theme-toggle:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: rotate(15deg);
 }
 
 .menu-toggle {
     display: none;
     font-size: 1.5rem;
+    color: var(--color-text);
 }
 
 /* Hero */
@@ -133,7 +189,24 @@ img {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.hero-content {
+    z-index: 10;
+    color: white;
+    /* Force white text on hero over image */
+}
+
+/* Hero text needs to stay light since it's over an image */
+.hero-content h1,
+.hero-content p,
+.hero-content em {
+    color: white;
+}
+
+.hero-content em {
+    color: var(--color-accent);
 }
 
 .hero-content h1 {
@@ -141,12 +214,6 @@ img {
     line-height: 1.1;
     margin-bottom: 20px;
     letter-spacing: -0.02em;
-}
-
-.hero-content em {
-    font-style: italic;
-    font-family: var(--font-heading);
-    color: var(--color-accent);
 }
 
 .hero-content p {
@@ -158,19 +225,23 @@ img {
 
 .btn-outline {
     display: inline-block;
-    padding: 15px 40px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 2px;
+    padding: 14px 40px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 4px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-size: 0.8rem;
     backdrop-filter: blur(5px);
     transition: all 0.3s ease;
+    color: white;
 }
 
 .btn-outline:hover {
     background: white;
     color: black;
+    border-color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .scroll-down {
